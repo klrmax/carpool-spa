@@ -1,0 +1,15 @@
+<div *ngIf="rides$ | async as rides; else loading">
+  <p *ngIf="rides.length === 0">
+    Aktuell sind keine Fahrten verfügbar.
+  </p>
+
+  <div *ngFor="let ride of rides" class="ride-card">
+    <h3>{{ ride.from }} &rarr; {{ ride.to }}</h3>
+    <p>Datum: {{ ride.date | date: 'dd.MM.yyyy HH:mm' }} Uhr</p>
+    <a [routerLink]="['/rides', ride.id]">Details anzeigen</a>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>Fahrten werden geladen...</p>
+</ng-template>
