@@ -1,1 +1,21 @@
-<p>searchbar works!</p>
+<form class.search-form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+
+  <div class="form-group">
+    <label for="from-input">Start</label>
+    <input id="from-input" type="text" placeholder="z.B. Mosbach" formControlName="from">
+  </div>
+
+  <div class="form-group">
+    <label for="to-input">Ziel</label>
+    <input id="to-input" type="text" placeholder="z.B. Heidelberg" formControlName="to">
+  </div>
+  
+  <div class="form-group">
+    <label for="date-input">Datum</label>
+    <input id="date-input" type="date" formControlName="date">
+  </div>
+
+  <button type="submit">Suchen</button>
+</form>
+
+<pre>{{ searchForm.value | json }}</pre>

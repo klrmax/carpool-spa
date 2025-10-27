@@ -1,1 +1,18 @@
-<p>ride-detail works!</p>
+<div *ngIf="ride$ | async as ride; else loading">
+  <h2>
+    Fahrt von {{ ride.from }} nach {{ ride.to }}
+  </h2>
+
+  <p>
+    <strong>Datum:</strong> {{ ride.date | date: 'EEEE, dd.MM.yyyy' }}
+  </p>
+  <p>
+    <strong>Uhrzeit:</strong> {{ ride.date | date: 'HH:mm' }} Uhr
+  </p>
+  
+  <a routerLink="/rides">← Zurück zur Übersicht</a>
+</div>
+
+<ng-template #loading>
+  <p>Fahrtdetails werden geladen...</p>
+</ng-template>
