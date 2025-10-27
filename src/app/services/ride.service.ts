@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http'; // Wichtig
+import { Observable, BehaviorSubject, combineLatest, of } from 'rxjs'; // 'of' für Fehlerfall
+import { map, switchMap, catchError } from 'rxjs/operators'; // Wichtig
 
+// Stelle sicher, dass das zu deinem Backend passt
 export interface Ride {
   id: number;
   from: string;
   to: string;
-  date: string;
+  date: string; 
+  availableSeats: number;
 }
 
-// Suchbegriffe, die wir erwarten
 export interface SearchTerms {
   from: string | null;
   to: string | null;
   date: string | null;
+  time: string | null;
+  seats: number | null;
 }
 
 @Injectable({
@@ -21,53 +25,81 @@ export interface SearchTerms {
 })
 export class RideService {
 
-  // Unser Schein-Datenbank-Array
-  private allRides: Ride[] = [
-    { id: 1, from: 'Mosbach', to: 'Heidelberg', date: '2025-10-28T10:00' },
-    { id: 2, from: 'Stuttgart', to: 'München', date: '2025-10-29T12:30' },
-    { id: 3, from: 'Mosbach', to: 'Sinsheim', date: '2025-10-30T17:00' },
-    { id: 4, from: 'Heilbronn', to: 'Frankfurt', date: '2025-11-01T08:00' }
-  ];
+  // !!! TRAGE HIER DEINE ECHTE HEROKU-URL EIN !!!
+  private apiUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/rides'; 
 
-  // Ein BehaviorSubject ist wie ein "Daten-Kanal", der sich den letzten Wert merkt.
-  // Hier speichern wir die aktuellen Suchbegriffe. Startwert ist leer.
-  private searchTermsSubject = new BehaviorSubject<SearchTerms>({ from: '', to: '', date: '' });
+  private searchTermsSubject = new BehaviorSubject<SearchTerms>({ 
+    from: '', to: '', date: '', time: '', seats: null 
+  });
 
-  constructor() { }
+  // HttpClient muss hier injiziert werden
+  constructor(private http: HttpClient) { }
 
-  // Öffentliche Methode, die die Searchbar aufruft, um die Suchbegriffe zu aktualisieren.
   updateSearchTerms(terms: SearchTerms): void {
     this.searchTermsSubject.next(terms);
   }
 
- getRides(): Observable<Ride[]> {
-    return combineLatest([
-      of(this.allRides),
-      this.searchTermsSubject.asObservable()
-    ]).pipe(
-      map(([rides, terms]) => {
-        // Wenn keine Suchbegriffe da sind, gib alle Fahrten zurück.
-        if (!terms.from && !terms.to && !terms.date) {
-          return rides;
-        }
+  // --- GET RIDES (FÜR DIE LISTE) ---
+  // Diese Version nutzt switchMap und http.get
+  getRides(): Observable<Ride[]> {
+    return this.searchTermsSubject.pipe(
+      switchMap(terms => 
+        this.http.get<Ride[]>(this.apiUrl).pipe( // <-- ECHTER HTTP-AUFRUF
+          map(rides => this.filterRides(rides, terms)),
+          catchError(error => {
+            console.error('Fehler beim Abrufen der Fahrten:', error);
+            return of([]); // Im Fehlerfall leere Liste
+          })
+        )
+      )
+    );
+  }
 
-        // Andernfalls, filtere das 'rides'-Array
-        return rides.filter(ride => {
-          const fromMatch = terms.from ? ride.from.toLowerCase().includes(terms.from.toLowerCase()) : true;
-          const toMatch = terms.to ? ride.to.toLowerCase().includes(terms.to.toLowerCase()) : true;
-          
-          // NEUE DATUMSFILTER-LOGIK
-          // Wir vergleichen nur den Datumsteil (YYYY-MM-DD), nicht die Uhrzeit.
-          const dateMatch = terms.date ? ride.date.startsWith(terms.date) : true;
-          
-          return fromMatch && toMatch && dateMatch;
-        });
+  // Filterlogik
+  private filterRides(rides: Ride[], terms: SearchTerms): Ride[] {
+    if (!terms.from && !terms.to && !terms.date && !terms.time && !terms.seats) {
+      return rides;
+    }
+    return rides.filter(ride => {
+      const fromMatch = terms.from ? ride.from.toLowerCase().includes(terms.from.toLowerCase()) : true;
+      const toMatch = terms.to ? ride.to.toLowerCase().includes(terms.to.toLowerCase()) : true;
+      const seatsMatch = (terms.seats && terms.seats > 0) ? ride.availableSeats >= terms.seats : true;
+      
+      let dateTimeMatch = true;
+      if (terms.date) {
+        const searchTime = terms.time || '00:00';
+        const searchDateTime = new Date(`${terms.date}T${searchTime}`);
+        const rideDateTime = new Date(ride.date);
+        dateTimeMatch = rideDateTime >= searchDateTime;
+      }
+      return fromMatch && toMatch && seatsMatch && dateTimeMatch;
+    });
+  }
+
+  // --- GET RIDE BY ID (FÜR DIE DETAILSEITE) ---
+  getRideById(id: number): Observable<Ride | undefined> {
+    return this.http.get<Ride>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error(`Fehler beim Abrufen der Fahrt ${id}:`, error);
+        return of(undefined); 
       })
     );
   }
 
-  getRideById(id: number): Observable<Ride | undefined> {
-    const ride = this.allRides.find(r => r.id === id);
-    return of(ride);
+  // --- CREATE RIDE (FÜR DAS NEUE FORMULAR) ---
+  createRide(rideData: any): Observable<any> {
+    const newRide = {
+      from: rideData.from,
+      to: rideData.to,
+      date: `${rideData.date}T${rideData.time}`, 
+      availableSeats: rideData.seats
+    };
+
+    return this.http.post(this.apiUrl, newRide).pipe(
+      catchError(error => {
+        console.error('Fehler beim Erstellen der Fahrt:', error);
+        throw error; 
+      })
+    );
   }
 }

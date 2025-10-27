@@ -15,6 +15,16 @@
     <input id="date-input" type="date" formControlName="date">
   </div>
 
+  <div class="form-group">
+    <label for="time-input">Ab (Uhrzeit)</label>
+    <input id="time-input" type="time" formControlName="time">
+  </div>
+
+  <div class="form-group">
+    <label for="seats-input">Freie Plätze (mind.)</label>
+    <input id="seats-input" type="number" min="1" placeholder="1" formControlName="seats">
+  </div>
+  
   <button type="submit">Suchen</button>
 </form>
 

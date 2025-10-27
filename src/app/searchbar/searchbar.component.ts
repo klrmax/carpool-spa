@@ -19,7 +19,9 @@ export class SearchbarComponent {
     // Jedes Feld ist ein FormControl. Der erste Parameter ist der Startwert.
     from: new FormControl(''),
     to: new FormControl(''),
-    date: new FormControl('')
+    date: new FormControl(''),
+    time: new FormControl(''),  
+    seats: new FormControl(null)
   });
   
   constructor(private rideService: RideService) {}
