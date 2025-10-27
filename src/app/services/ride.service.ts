@@ -26,7 +26,7 @@ export interface SearchTerms {
 export class RideService {
 
   // !!! TRAGE HIER DEINE ECHTE HEROKU-URL EIN !!!
-  private apiUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/rides'; 
+  private apiUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api/ride'; 
 
   private searchTermsSubject = new BehaviorSubject<SearchTerms>({ 
     from: '', to: '', date: '', time: '', seats: null 
