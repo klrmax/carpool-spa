@@ -9,26 +9,41 @@ import { Ride, RideService } from '../../services/ride.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './ride-detail.component.html',
-  styleUrl: './ride-detail.component.scss'
+  styleUrls: ['./ride-detail.component.css']
 })
 export class RideDetailComponent implements OnInit {
-
   public ride$!: Observable<Ride | undefined>;
+  public isRequesting = false;
+  public requestSuccess = false;
+  public requestError: string | null = null;
+  private rideId!: number;
 
-  // Wir injizieren hier ZWEI Services:
-  // ActivatedRoute gibt uns Infos über die aktuell aktive Route (inkl. URL-Parameter).
-  // RideService kennen wir schon.
   constructor(
     private route: ActivatedRoute,
     private rideService: RideService
   ) {}
 
   ngOnInit(): void {
-    // 1. Wir holen uns die ID aus den URL-Parametern.
-    // Das '+' wandelt den String (Text) aus der URL in eine number (Zahl) um.
-    const rideId = +this.route.snapshot.paramMap.get('id')!;
+    this.rideId = +this.route.snapshot.paramMap.get('id')!;
+    this.ride$ = this.rideService.getRideById(this.rideId);
+  }
 
-    // 2. Wir rufen die neue Service-Methode mit dieser ID auf.
-    this.ride$ = this.rideService.getRideById(rideId);
+  sendRequest(): void {
+    if (this.isRequesting) return;
+    
+    this.isRequesting = true;
+    this.requestSuccess = false;
+    this.requestError = null;
+
+    this.rideService.sendRideRequest(this.rideId).subscribe({
+      next: () => {
+        this.requestSuccess = true;
+        this.isRequesting = false;
+      },
+      error: (error) => {
+        this.requestError = error.message || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+        this.isRequesting = false;
+      }
+    });
   }
 }

@@ -12,30 +12,58 @@ import { AuthService } from '../services/auth.service'; // <-- Importieren
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-
   public loginForm = new FormGroup({
-    phoneNumber: new FormControl('', Validators.required), 
-    password: new FormControl('', Validators.required)
+    phoneNumber: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[+]?[0-9]+$') // Numbers and optional + prefix
+    ]),
+    password: new FormControl('', [
+      Validators.required
+    ])
   });
 
-  // AuthService injizieren
-  constructor(private authService: AuthService) {}
+  public errorMessage: string | null = null;
+  public isLoading = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   onSubmit(): void {
+    this.errorMessage = null;
+    
     if (this.loginForm.valid) {
-      // Echten Service aufrufen
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          // Erfolg! (Navigation passiert im Service)
-          console.log('Login erfolgreich, Token:', response.token);
+      this.isLoading = true;
+      
+      // Get the form values
+      const phoneNumber = this.loginForm.get('phoneNumber')?.value;
+      const password = this.loginForm.get('password')?.value;
+      
+      console.log('Form submitted with phone:', phoneNumber);
+      
+      this.authService.login({ phoneNumber, password }).subscribe({
+        next: () => {
+          console.log('Login successful, navigation handled by service');
+          this.isLoading = false;
         },
-        error: (err) => {
-          // Hier Fehler anzeigen, z.B. "Falsches Passwort"
-          console.error('Login-Fehler:', err);
+        error: (error: Error) => {
+          console.error('Login component received error:', error);
+          this.isLoading = false;
+          // Use the error message from the service
+          this.errorMessage = error.message;
         }
       });
     } else {
-      console.log('Formular ist ungültig.');
+      if (this.loginForm.get('phoneNumber')?.hasError('pattern')) {
+        this.errorMessage = 'Bitte gib eine gültige Telefonnummer ein (nur Zahlen und optional ein + am Anfang).';
+      } else if (this.loginForm.get('phoneNumber')?.hasError('required')) {
+        this.errorMessage = 'Bitte gib deine Telefonnummer ein.';
+      } else if (this.loginForm.get('password')?.hasError('required')) {
+        this.errorMessage = 'Bitte gib dein Passwort ein.';
+      } else {
+        this.errorMessage = 'Bitte fülle alle Felder korrekt aus.';
+      }
     }
   }
 }

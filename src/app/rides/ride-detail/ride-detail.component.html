@@ -1,18 +1,68 @@
-<div *ngIf="ride$ | async as ride; else loading">
-  <h2>
-    Fahrt von {{ ride.from }} nach {{ ride.to }}
-  </h2>
+<div *ngIf="ride$ | async as ride; else loading" class="ride-detail">
+  <div class="ride-header">
+    <h2>Fahrt Details</h2>
+    <span class="created-at">Erstellt am: {{ ride.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
+  </div>
 
-  <p>
-    <strong>Datum:</strong> {{ ride.date | date: 'EEEE, dd.MM.yyyy' }}
-  </p>
-  <p>
-    <strong>Uhrzeit:</strong> {{ ride.date | date: 'HH:mm' }} Uhr
-  </p>
-  
-  <a routerLink="/rides">← Zurück zur Übersicht</a>
+  <div class="ride-info">
+    <div class="route-info">
+      <h3>Route</h3>
+      <p>
+        <strong>Von:</strong> {{ ride.departure_location }}
+      </p>
+      <p>
+        <strong>Nach:</strong> {{ ride.destination_location }}
+      </p>
+    </div>
+
+    <div class="time-info">
+      <h3>Zeitplan</h3>
+      <p>
+        <strong>Datum:</strong> {{ ride.departure_time | date: 'EEEE, dd.MM.yyyy' }}
+      </p>
+      <p>
+        <strong>Abfahrt:</strong> {{ ride.departure_time | date: 'HH:mm' }} Uhr
+      </p>
+    </div>
+
+    <div class="driver-info">
+      <h3>Fahrer Information</h3>
+      <p>
+        <strong>Name:</strong> {{ ride.driver.name }}
+      </p>
+      <p>
+        <strong>Email:</strong> {{ ride.driver.email }}
+      </p>
+    </div>
+
+    <div class="seats-info">
+      <h3>Verfügbarkeit</h3>
+      <p>
+        <strong>Freie Plätze:</strong> {{ ride.seats_available }}
+      </p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button 
+      class="request-button" 
+      (click)="sendRequest()"
+      [disabled]="isRequesting">
+      {{ isRequesting ? 'Anfrage wird gesendet...' : 'Mitfahrt anfragen' }}
+    </button>
+    <a routerLink="/rides" class="back-link">← Zurück zur Übersicht</a>
+  </div>
+
+  <div *ngIf="requestSuccess" class="success-message">
+    Deine Anfrage wurde erfolgreich gesendet!
+  </div>
+  <div *ngIf="requestError" class="error-message">
+    {{ requestError }}
+  </div>
 </div>
 
 <ng-template #loading>
-  <p>Fahrtdetails werden geladen...</p>
+  <div class="loading">
+    <p>Fahrtdetails werden geladen...</p>
+  </div>
 </ng-template>

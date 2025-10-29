@@ -1,0 +1,41 @@
+<div class="my-rides">
+  <div *ngIf="loading" class="loading">
+    Fahrten werden geladen...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <section class="rides-section">
+      <h2>Meine erstellten Fahrten</h2>
+      <div *ngIf="createdRides.length === 0" class="no-rides">
+        Keine erstellten Fahrten vorhanden.
+      </div>
+      <div class="ride-list">
+        <div *ngFor="let ride of createdRides" class="ride-card">
+          <h3>{{ ride.departure_location }} → {{ ride.destination_location }}</h3>
+          <p>Datum: {{ ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
+          <p>Freie Plätze: {{ ride.available_seats }}</p>
+          <button [routerLink]="['/rides', ride.id]">Details</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="rides-section">
+      <h2>Mitfahrten</h2>
+      <div *ngIf="joinedRides.length === 0" class="no-rides">
+        Keine Mitfahrten vorhanden.
+      </div>
+      <div class="ride-list">
+        <div *ngFor="let ride of joinedRides" class="ride-card">
+          <h3>{{ ride.departure_location }} → {{ ride.destination_location }}</h3>
+          <p>Datum: {{ ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
+          <p>Fahrer: {{ ride.driver?.name }}</p>
+          <button [routerLink]="['/rides', ride.id]">Details</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

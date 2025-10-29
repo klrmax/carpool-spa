@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 // Interface für die erwartete Login-Antwort (mit Token)
 export interface AuthResponse {
+  message: string;
   token: string;
-  // Ggf. weitere User-Infos
+  expiresAt: string;
+  userId: string;
+  name: string;
 }
 
 @Injectable({
@@ -15,7 +18,7 @@ export interface AuthResponse {
 })
 export class AuthService {
 
- private authApiUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api/ride';
+ private authApiUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api/users';
 
   constructor(
     private http: HttpClient,
@@ -36,39 +39,96 @@ export class AuthService {
 
   // --- LOGIN METHODE ---
   login(credentials: any): Observable<AuthResponse> {
-    // Schickt die Daten an z.B. POST /api/users/login
-    return this.http.post<AuthResponse>(`${this.authApiUrl}/login`, credentials).pipe(
+    // Format mobileNumber to ensure it's in the correct format
+    const mobileNumber = credentials.phoneNumber.startsWith('+') 
+      ? credentials.phoneNumber 
+      : '+49' + credentials.phoneNumber.replace(/^0/, '');
+
+    const payload = {
+      mobileNumber: mobileNumber,
+      password: credentials.password
+    };
+
+    console.log('Attempting login with:', { ...payload, password: '****' });
+
+    return this.http.post<AuthResponse>(`${this.authApiUrl}/login`, payload).pipe(
       tap((response) => {
-        // Bei Erfolg: Token speichern
-        this.setSession(response.token);
-        // Zur Hauptseite navigieren
-        this.router.navigate(['/rides']);
+        console.log('Login successful, response:', response);
+        if (response && response.token && response.userId) {
+          // Save token without Bearer prefix - will be added by interceptor
+          this.setSession(response.token.replace('Bearer ', ''), response.userId);
+          if (response.name) localStorage.setItem('userName', response.name);
+          if (response.expiresAt) localStorage.setItem('tokenExpiration', response.expiresAt);
+          // Navigate to main page
+          this.router.navigate(['/rides']);
+        } else {
+          console.error('Invalid response structure:', response);
+          throw new Error('Ungültige Antwort vom Server');
+        }
       }),
-      catchError(this.handleError<AuthResponse>('login'))
+      catchError((error) => {
+        console.error('Login failed:', error);
+        
+        if (error.error?.error === 'Invalid credentials') {
+          throw new Error('Telefonnummer oder Passwort ist falsch');
+        }
+        
+        if (error.status === 400) {
+          throw new Error('Bitte überprüfe deine Eingaben');
+        }
+        
+        if (error.status === 0) {
+          throw new Error('Keine Verbindung zum Server möglich');
+        }
+        
+        throw new Error('Ein unerwarteter Fehler ist aufgetreten');
+      })
     );
   }
 
   // --- LOGOUT METHODE ---
   logout(): void {
-    const token = localStorage.getItem('fgatoken');
+    const token = this.getToken();
     
-    // Optional: Dem Backend sagen, dass der Token ungültig ist
-    // (basierend auf deinem jQuery-Code)
-    this.http.post(`${this.authApiUrl}/logout`, { token: token }).subscribe();
+    if (token) {
+      // Send logout request to backend
+      this.http.post(`${this.authApiUrl}/logout`, {}).subscribe({
+        error: (err) => console.error('Logout request failed:', err)
+      });
+    }
 
-    // In jedem Fall: Lokale Session löschen und weiterleiten
-    localStorage.removeItem('fgatoken');
+    this.clearSession();
     this.router.navigate(['/login']);
   }
 
-  // Lokalen Token speichern
-  private setSession(token: string): void {
+  // Session management methods
+  private setSession(token: string, userId: string | number): void {
     localStorage.setItem('fgatoken', token);
+    localStorage.setItem('userid', String(userId));
   }
 
-  // Prüfen, ob ein Token vorhanden ist
+  private clearSession(): void {
+    localStorage.removeItem('fgatoken');
+    localStorage.removeItem('userid');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('tokenExpiration');
+  }
+
+  // Public methods for token/user info
+  public getUserId(): string | null {
+    return localStorage.getItem('userid');
+  }
+
   public isLoggedIn(): boolean {
-    return !!localStorage.getItem('fgatoken');
+    return !!this.getToken();
+  }
+
+  public isAuthenticated(): boolean {
+    return this.isLoggedIn();
+  }
+
+  public getToken(): string | null {
+    return localStorage.getItem('fgatoken');
   }
 
   // Einfache Fehlerbehandlung

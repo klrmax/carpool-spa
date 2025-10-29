@@ -1,0 +1,55 @@
+.my-rides {
+  padding: 20px;
+}
+
+.rides-section {
+  margin-bottom: 30px;
+}
+
+.rides-section h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.ride-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.ride-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ride-card h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.ride-card button {
+  background: #EC0016;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.no-rides {
+  color: #666;
+  font-style: italic;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error {
+  color: #EC0016;
+}

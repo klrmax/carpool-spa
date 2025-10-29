@@ -45,6 +45,27 @@ input::placeholder {
     color: #999;
 }
 
+input.error {
+    border-color: #ff0033;
+    background-color: #fff5f5;
+}
+
+.error-hint {
+    color: #ff0033;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.error-message {
+    background-color: #ff0033;
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 20px 0;
+    text-align: center;
+}
+
 .password-input {
     position: relative;
     width: 100%;
