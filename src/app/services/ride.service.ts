@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, throwError, from } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { createApollo } from '../graphql.config';
+import { Apollo } from 'apollo-angular';
 import { gql } from '@apollo/client/core';
 
 
@@ -58,7 +58,6 @@ export class RideService {
     return this._searchTermsSubject;
   }
 
-  private apollo = createApollo();
   private GET_ALL_RIDES = gql`
     query GetAllRides($filters: RideFiltersInput) {
       rides(filters: $filters) {
@@ -79,15 +78,14 @@ export class RideService {
     }
   `;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private apollo: Apollo) { }
 
   // Update der Suchbegriffe
   updateSearchTerms(terms: SearchTerms): void {
     this._searchTermsSubject.next(terms);
   }
 
-  // --- GET RIDES (FÜR DIE LISTE) ---
-  // Diese Version nutzt switchMap und http.get
+  
   getRides(): Observable<Ride[]> {
     return this.searchTermsSubject.pipe(
       switchMap(terms => {

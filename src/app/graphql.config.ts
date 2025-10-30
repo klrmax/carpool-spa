@@ -1,11 +1,8 @@
-import { HttpLink } from '@apollo/client/link/http';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client/core';
 
-const uri = 'https://carpoolbff-c576f25b03e8.herokuapp.com/graphql';
-
-export function createApollo() {
+export function createApollo(httpLink: ApolloLink) {
   return new ApolloClient({
-    link: new HttpLink({ uri }),
+    link: httpLink,
     cache: new InMemoryCache(),
     defaultOptions: {
       watchQuery: {
