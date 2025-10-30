@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http'; 
-import { Observable, of, BehaviorSubject, combineLatest, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http'; 
+import { Observable, of, BehaviorSubject, throwError, from } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { createApollo } from '../graphql.config';
+import { gql } from '@apollo/client/core';
 
 
 
@@ -43,7 +45,6 @@ interface RideRequest {
   providedIn: 'root'
 })
 export class RideService {
-
   private baseUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api';
   private searchTermsSubject: BehaviorSubject<SearchTerms> = new BehaviorSubject<SearchTerms>({
     from: null,
@@ -52,6 +53,27 @@ export class RideService {
     time: null,
     seats: null
   });
+
+  private apollo = createApollo();
+  private GET_ALL_RIDES = gql`
+    query GetAllRides($filters: RideFiltersInput) {
+      rides(filters: $filters) {
+        id
+        departure_location
+        destination_location
+        departure_time
+        seats_available
+        driver {
+          id
+          name
+        }
+        passengers {
+          id
+          name
+        }
+      }
+    }
+  `;
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -65,17 +87,19 @@ export class RideService {
   getRides(): Observable<Ride[]> {
     return this.searchTermsSubject.pipe(
       switchMap(terms => {
-        let url = `${this.baseUrl}/ride`;
-        if (terms.from || terms.to || terms.date || terms.time) {
-          const params = new HttpParams()
-            .set('start', terms.from || '')
-            .set('destination', terms.to || '')
-            .set('date', terms.date || '')
-            .set('time', terms.time || '');
-          url = `${this.baseUrl}/ride/search${params.toString()}`;
-        }
-        return this.http.get<Ride[]>(url).pipe(
-          map(rides => {
+        return from(this.apollo.query<{rides: Ride[]}>({
+          query: this.GET_ALL_RIDES,
+          variables: {
+            filters: {
+              departureLocation: terms.from || null,
+              destinationLocation: terms.to || null,
+              departureTime: terms.date ? `${terms.date}T${terms.time || '00:00'}:00` : null,
+              seatsAvailable: terms.seats || null
+            }
+          }
+        })).pipe(
+          map(result => {
+            const rides = result.data?.rides || [];
             return rides.filter(ride => {
               if (terms.seats && terms.seats > 0) {
                 return ride.seats_available >= terms.seats;
