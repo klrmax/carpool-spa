@@ -45,8 +45,8 @@ export class DashboardComponent implements OnInit {
       const rideData = {
         departure_location: formValue.from,
         destination_location: formValue.to,
-        departure_time: `${formValue.date}T${formValue.time}`,
-        available_seats: formValue.seats
+        departure_time: `${formValue.date}T${formValue.time}:00`,
+        seats_available: formValue.seats
       };
 
       this.rideService.createRide(rideData).subscribe({

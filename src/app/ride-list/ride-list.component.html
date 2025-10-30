@@ -9,7 +9,7 @@
     
     <h3>{{ ride.departure_location || 'Loading...' }} → {{ ride.destination_location || 'Loading...' }}</h3>
     <p>{{ ride.departure_time ? (ride.departure_time | date: 'EEEE, dd.MM.yyyy • HH:mm') + ' Uhr' : 'Loading...' }}</p>
-    <p>Fahrer: {{ ride.driver?.name || 'Loading...' }}</p>
+    <p>Fahrer: {{ ride.driver.name || 'Loading...' }}</p>
     <a [routerLink]="['/rides', ride.id]">Auswählen →</a>
   </div>
 </div>

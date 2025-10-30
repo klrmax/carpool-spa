@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; 
-import { Observable, of, BehaviorSubject, throwError, from } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+
 import { Apollo } from 'apollo-angular';
-import { gql } from '@apollo/client/core';
+import { GET_ALL_RIDES } from '../graphql/ride.queries';
 
-
+type RideRequest = any; // Define a proper interface for RideRequest
 
 export interface Ride {
   id: number;
@@ -20,25 +20,6 @@ export interface Ride {
     email: string;
   };
   created_at: string;
-}
-export interface SearchTerms {
-  from: string | null;
-  to: string | null;
-  date: string | null;
-  time: string | null;
-  seats: number | null;
-}
-interface RideRequest {
-  id: number;
-  ride_id: number;
-  user_id: number;
-  status: string;
-  created_at: string;
-  ride: Ride;
-  user: {
-    name: string;
-    userid: number;
-  };
 }
 
 @Injectable({
@@ -58,27 +39,7 @@ export class RideService {
     return this._searchTermsSubject;
   }
 
-  private GET_ALL_RIDES = gql`
-    query GetAllRides($filters: RideFiltersInput) {
-      rides(filters: $filters) {
-        id
-        departure_location
-        destination_location
-        departure_time
-        seats_available
-        driver {
-          id
-          name
-        }
-        passengers {
-          id
-          name
-        }
-      }
-    }
-  `;
-
-  constructor(private http: HttpClient, private authService: AuthService, private apollo: Apollo) { }
+  constructor(private apollo: Apollo, private http: HttpClient) { }
 
   // Update der Suchbegriffe
   updateSearchTerms(terms: SearchTerms): void {
@@ -89,8 +50,8 @@ export class RideService {
   getRides(): Observable<Ride[]> {
     return this.searchTermsSubject.pipe(
       switchMap(terms => {
-        return from(this.apollo.query<{rides: Ride[]}>({
-          query: this.GET_ALL_RIDES,
+        return this.apollo.watchQuery<{ rides: Ride[] }>({
+          query: GET_ALL_RIDES,
           variables: {
             filters: {
               departureLocation: terms.from || null,
@@ -99,7 +60,7 @@ export class RideService {
               seatsAvailable: terms.seats || null
             }
           }
-        })).pipe(
+        }).valueChanges.pipe(
           map(result => {
             const rides = result.data?.rides || [];
             return rides.filter(ride => {
@@ -119,104 +80,55 @@ export class RideService {
   }
 
   getRideById(id: number): Observable<Ride | undefined> {
-    return this.http.get<Ride>(`${this.baseUrl}/ride/${id}`).pipe(
-      catchError(error => {
-        console.error(`Fehler beim Abrufen der Fahrt ${id}:`, error);
-        return of(undefined);
-      })
-    );
+    console.log(`Fetching ride by ID: ${id}`);
+    return this.http.get<Ride>(`${this.baseUrl}/rides/${id}`);
   }
 
   createRide(rideData: any): Observable<any> {
-    const payload = {
-      departure_location: rideData.from,
-      destination_location: rideData.to,
-      departure_time: `${rideData.date}T${rideData.time}:00`,
-      seats_available: rideData.seats
-    };
-
-    return this.http.post(`${this.baseUrl}/ride`, payload).pipe(
-      catchError(error => {
-        console.error('Fehler beim Erstellen der Fahrt:', error);
-        throw error;
-      })
-    );
+    console.log('Creating ride with data:', rideData);
+    return this.http.post(`${this.baseUrl}/rides`, rideData);
   }
 
   sendRideRequest(rideId: number): Observable<any> {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      return throwError(() => new Error('User nicht eingeloggt.'));
-    }
-
-    const payload = {
-      userId: userId,
-      rideId: rideId
-    };
-
-    return this.http.post(`${this.baseUrl}/ride-request`, payload).pipe(
-      catchError(error => {
-        console.error('Fehler beim Senden der Fahrtanfrage:', error);
-        throw error;
-      })
-    );
+    console.log(`Sending ride request for ride ID: ${rideId}`);
+    return this.http.post(`${this.baseUrl}/rides/${rideId}/requests`, {});
   }
 
   getMyCreatedRides(): Observable<Ride[]> {
-    return this.http.get<Ride[]>(`${this.baseUrl}/ride/mine`).pipe(
-      catchError(error => {
-        console.error('Error fetching created rides:', error);
-        return of([]);
-      })
-    );
+    console.log('Fetching my created rides');
+    return this.http.get<Ride[]>(`${this.baseUrl}/rides/me/created`);
   }
 
   getMyJoinedRides(): Observable<Ride[]> {
-    return this.http.get<Ride[]>(`${this.baseUrl}/ride/joined`).pipe(
-      catchError(error => {
-        console.error('Error fetching joined rides:', error);
-        return of([]);
-      })
-    );
+    console.log('Fetching my joined rides');
+    return this.http.get<Ride[]>(`${this.baseUrl}/rides/me/joined`);
   }
 
   getOpenRequests(): Observable<RideRequest[]> {
-    return this.http.get<RideRequest[]>(`${this.baseUrl}/ride-request/open`).pipe(
-      catchError(error => {
-        console.error('Error fetching open requests:', error);
-        return of([]);
-      })
-    );
+    console.log('Fetching open requests');
+    return this.http.get<RideRequest[]>(`${this.baseUrl}/requests/open`);
   }
 
   getMyRequests(): Observable<RideRequest[]> {
-    return this.http.get<RideRequest[]>(`${this.baseUrl}/ride-request/mine`).pipe(
-      catchError(error => {
-        console.error('Error fetching my requests:', error);
-        return of([]);
-      })
-    );
+    console.log('Fetching my requests');
+    return this.http.get<RideRequest[]>(`${this.baseUrl}/requests/me`);
   }
 
   acceptRequest(requestId: number): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, {
-      action: 'accept'
-    }).pipe(
-      catchError(error => {
-        console.error('Error accepting request:', error);
-        throw error;
-      })
-    );
+    console.log(`Accepting request with ID: ${requestId}`);
+    return this.http.put(`${this.baseUrl}/requests/${requestId}/accept`, {});
   }
 
   rejectRequest(requestId: number): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, {
-      action: 'reject'
-    }).pipe(
-      catchError(error => {
-        console.error('Error rejecting request:', error);
-        throw error;
-      })
-    );
+    console.log(`Rejecting request with ID: ${requestId}`);
+    return this.http.put(`${this.baseUrl}/requests/${requestId}/reject`, {});
   }
+}
+
+export interface SearchTerms {
+  from: string | null;
+  to: string | null;
+  date: string | null;
+  time: string | null;
+  seats: number | null;
 }
