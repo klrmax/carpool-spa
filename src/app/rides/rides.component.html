@@ -6,5 +6,33 @@
 
 <h2>Finde deine nächste Fahrt</h2>
 <app-searchbar></app-searchbar>
+
+<div class="view-toggle" style="margin: 1rem 0;">
+  <button (click)="toggleTrains()" [class.active]="showTrains" class="toggle-btn">
+    {{ showTrains ? 'Nur Mitfahrgelegenheiten' : 'Mit Bahnverbindungen' }}
+  </button>
+</div>
+
+<div *ngIf="showTrains && trainConnections.length > 0" class="train-connections">
+  <h3>Deutsche Bahn Verbindungen</h3>
+  <div class="train-list">
+    <div *ngFor="let connection of trainConnections" class="train-card">
+      <div class="train-time">
+        <div>{{ connection.departure_time }}</div>
+        <div class="duration">{{ connection.duration }}</div>
+        <div>{{ connection.arrival_time }}</div>
+      </div>
+      <div class="train-stations">
+        <div>{{ connection.departure_station }}</div>
+        <div class="transfers">{{ connection.transfers }} Umstieg(e)</div>
+        <div>{{ connection.arrival_station }}</div>
+      </div>
+      <div class="train-price">
+        <strong>{{ connection.price | currency:'EUR' }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
 <hr>
 <app-ride-list></app-ride-list>

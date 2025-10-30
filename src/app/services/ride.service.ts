@@ -46,13 +46,17 @@ interface RideRequest {
 })
 export class RideService {
   private baseUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api';
-  private searchTermsSubject: BehaviorSubject<SearchTerms> = new BehaviorSubject<SearchTerms>({
+  private _searchTermsSubject: BehaviorSubject<SearchTerms> = new BehaviorSubject<SearchTerms>({
     from: null,
     to: null,
     date: null,
     time: null,
     seats: null
   });
+
+  get searchTermsSubject(): BehaviorSubject<SearchTerms> {
+    return this._searchTermsSubject;
+  }
 
   private apollo = createApollo();
   private GET_ALL_RIDES = gql`
@@ -79,7 +83,7 @@ export class RideService {
 
   // Update der Suchbegriffe
   updateSearchTerms(terms: SearchTerms): void {
-    this.searchTermsSubject.next(terms);
+    this._searchTermsSubject.next(terms);
   }
 
   // --- GET RIDES (FÜR DIE LISTE) ---
