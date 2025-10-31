@@ -36,6 +36,7 @@ export const AuthInterceptor: HttpInterceptorFn = (
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         console.error('[AuthInterceptor] Received 401 Error. Logging out and redirecting.', error);
+        alert('401 Fehler erhalten! Bitte überprüfen Sie die Konsole auf [AuthInterceptor] Logs.');
         // Token möglicherweise abgelaufen → Session beenden und zur MPA-Login-Seite umleiten
         authService.logout();
         // Externe MPA-Login-URL (die nach Login zurück auf diese SPA weiterleitet)
