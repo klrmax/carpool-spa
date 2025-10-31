@@ -34,6 +34,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   // 3) Kein Token verfügbar → zur MPA-Login-Seite weiterleiten
   notificationService.showWarning('Bitte melden Sie sich an, um diese Seite zu sehen.');
   // Externe MPA-Login-URL
-  window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/public/Login.html';
+  window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/Login.html';
   return false;
 };
