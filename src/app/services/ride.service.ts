@@ -81,47 +81,47 @@ export class RideService {
 
   getRideById(id: number): Observable<Ride | undefined> {
     console.log(`Fetching ride by ID: ${id}`);
-    return this.http.get<Ride>(`${this.baseUrl}/rides/${id}`);
+    return this.http.get<Ride>(`${this.baseUrl}/ride/${id}`);
   }
 
   createRide(rideData: any): Observable<any> {
     console.log('Creating ride with data:', rideData);
-    return this.http.post(`${this.baseUrl}/rides`, rideData);
+    return this.http.post(`${this.baseUrl}/ride`, rideData);
   }
 
   sendRideRequest(rideId: number): Observable<any> {
     console.log(`Sending ride request for ride ID: ${rideId}`);
-    return this.http.post(`${this.baseUrl}/rides/${rideId}/requests`, {});
+    return this.http.post(`${this.baseUrl}/ride-request`, { rideId });
   }
 
   getMyCreatedRides(): Observable<Ride[]> {
     console.log('Fetching my created rides');
-    return this.http.get<Ride[]>(`${this.baseUrl}/rides/me/created`);
+    return this.http.get<Ride[]>(`${this.baseUrl}/ride/mine`);
   }
 
   getMyJoinedRides(): Observable<Ride[]> {
     console.log('Fetching my joined rides');
-    return this.http.get<Ride[]>(`${this.baseUrl}/rides/me/joined`);
+    return this.http.get<Ride[]>(`${this.baseUrl}/ride/joined`);
   }
 
   getOpenRequests(): Observable<RideRequest[]> {
     console.log('Fetching open requests');
-    return this.http.get<RideRequest[]>(`${this.baseUrl}/requests/open`);
+    return this.http.get<RideRequest[]>(`${this.baseUrl}/ride-request/open`);
   }
 
   getMyRequests(): Observable<RideRequest[]> {
     console.log('Fetching my requests');
-    return this.http.get<RideRequest[]>(`${this.baseUrl}/requests/me`);
+    return this.http.get<RideRequest[]>(`${this.baseUrl}/ride-request/mine`);
   }
 
   acceptRequest(requestId: number): Observable<any> {
     console.log(`Accepting request with ID: ${requestId}`);
-    return this.http.put(`${this.baseUrl}/requests/${requestId}/accept`, {});
+    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, { status: 'accepted' });
   }
 
   rejectRequest(requestId: number): Observable<any> {
     console.log(`Rejecting request with ID: ${requestId}`);
-    return this.http.put(`${this.baseUrl}/requests/${requestId}/reject`, {});
+    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, { status: 'rejected' });
   }
 }
 
