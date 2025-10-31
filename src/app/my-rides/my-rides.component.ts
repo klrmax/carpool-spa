@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { RideService } from '../services/ride.service';
+import { AuthService } from '../services/auth.service';
+import { filter, take } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-my-rides',
@@ -16,31 +19,28 @@ export class MyRidesComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private rideService: RideService) {}
+  constructor(private rideService: RideService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.loadRides();
+    this.authService.isAuthenticated.pipe(
+      filter(isAuth => isAuth),
+      take(1)
+    ).subscribe(() => {
+      this.loadRides();
+    });
   }
 
   loadRides(): void {
     this.loading = true;
-    
-    // Load created rides
-    this.rideService.getMyCreatedRides().subscribe({
-      next: (rides) => {
-        this.createdRides = rides;
-        this.loading = false;
-      },
-      error: (error) => {
-        this.error = 'Fehler beim Laden der Fahrten';
-        this.loading = false;
-      }
-    });
+    this.error = '';
 
-    // Load joined rides
-    this.rideService.getMyJoinedRides().subscribe({
+    forkJoin({
+      created: this.rideService.getMyCreatedRides(),
+      joined: this.rideService.getMyJoinedRides()
+    }).subscribe({
       next: (rides) => {
-        this.joinedRides = rides;
+        this.createdRides = rides.created;
+        this.joinedRides = rides.joined;
         this.loading = false;
       },
       error: (error) => {
