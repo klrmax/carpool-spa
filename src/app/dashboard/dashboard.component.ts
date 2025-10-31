@@ -5,7 +5,7 @@ import { MyRidesComponent } from '../my-rides/my-rides.component';
 import { RideRequestsComponent } from '../ride-requests/ride-requests.component';
 import { RideService } from '../services/ride.service';
 import { NotificationService } from '../services/notification.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private rideService: RideService, 
     private router: Router,
+    private route: ActivatedRoute,
     private notificationService: NotificationService
   ) {}
 
@@ -36,7 +37,11 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Load initial data if needed
+    // Entferne sensible Token-Parameter aus der URL, nachdem der Guard sie verarbeitet hat
+    const hasTokenInUrl = this.route.snapshot.queryParamMap.has('token');
+    if (hasTokenInUrl) {
+      this.router.navigate([], { queryParams: {}, replaceUrl: true });
+    }
   }
 
   onSubmit(): void {
@@ -50,15 +55,16 @@ export class DashboardComponent implements OnInit {
       };
 
       this.rideService.createRide(rideData).subscribe({
-        next: (newRide) => {
+        next: (newRide: any) => {
           this.notificationService.showSuccess('Fahrt wurde erfolgreich erstellt!');
           this.createRideForm.reset();
           this.setActiveTab('myRides');
         },
-        error: (error) => {
+        error: (error: any) => {
           if (error.status === 401) {
             this.notificationService.showError('Bitte melden Sie sich an, um eine Fahrt zu erstellen.');
-            this.router.navigate(['/login']);
+            // Redirect zur MPA-Login-Seite
+            window.location.href = 'https://carpool-mpa.herokuapp.com/public/Login.html';
           } else {
             this.notificationService.showError(error.message || 'Fehler beim Erstellen der Fahrt. Bitte versuchen Sie es später erneut.');
           }

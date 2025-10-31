@@ -29,11 +29,10 @@ export const AuthInterceptor: HttpInterceptorFn = (
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Token might be expired
+        // Token möglicherweise abgelaufen → Session beenden und zur MPA-Login-Seite umleiten
         authService.logout();
-        router.navigate(['/login'], {
-          queryParams: { returnUrl: router.url }
-        });
+        // Externe MPA-Login-URL (die nach Login zurück auf diese SPA weiterleitet)
+        window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/';
       }
       return throwError(() => error);
     })
