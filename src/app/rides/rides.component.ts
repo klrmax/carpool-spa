@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
 export class RidesComponent implements OnDestroy {
   trainConnections: TrainConnection[] = [];
   private searchSubscription: Subscription;
-  showTrains = true;
 
   constructor(
     private rideService: RideService,
@@ -49,9 +48,5 @@ export class RidesComponent implements OnDestroy {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
-  }
-
-  toggleTrains() {
-    this.showTrains = !this.showTrains;
   }
 }

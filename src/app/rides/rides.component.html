@@ -1,19 +1,13 @@
 <div class="rides-container">
   <div class="rides-header">
     <h2>Finde deine nächste Fahrt</h2>
-    <a routerLink="/dashboard" class="btn-primary">Neue Fahrt anbieten</a>
+    <a routerLink="/dashboard" class="btn-primary">My Dashboard</a>
   </div>
 
   <app-searchbar></app-searchbar>
 
-  <div class="view-toggle">
-    <button (click)="toggleTrains()" [class.active]="showTrains" class="toggle-btn">
-      {{ showTrains ? 'Nur Mitfahrgelegenheiten' : 'Mit Bahnverbindungen' }}
-    </button>
-  </div>
-
   <div class="content-area">
-    <div *ngIf="showTrains && trainConnections.length > 0" class="train-connections">
+    <div class="train-connections">
       <h3>Alternative Bahnverbindungen</h3>
       <div class="train-list">
         <div *ngFor="let connection of trainConnections" class="train-card">
