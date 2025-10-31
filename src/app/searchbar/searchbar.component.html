@@ -1,31 +1,29 @@
-<form [class.search-form] [formGroup]="searchForm" (ngSubmit)="onSearch()">
+<div class="search-container">
+  <form class="search-form" [formGroup]="searchForm" (ngSubmit)="onSearch()">
+    <div class="input-group">
+      <div class="form-field">
+        <label for="from-input">Von</label>
+        <input id="from-input" type="text" placeholder="Startbahnhof" formControlName="from">
+      </div>
+      <div class="form-field">
+        <label for="to-input">Nach</label>
+        <input id="to-input" type="text" placeholder="Zielbahnhof" formControlName="to">
+      </div>
+    </div>
 
-  <div class="form-group">
-    <label for="from-input">Start</label>
-    <input id="from-input" type="text" placeholder="z.B. Mosbach" formControlName="from">
-  </div>
+    <div class="input-group">
+      <div class="form-field date-field">
+        <label for="date-input">Datum</label>
+        <input id="date-input" type="date" formControlName="date">
+      </div>
+      <div class="form-field time-field">
+        <label for="time-input">Uhrzeit</label>
+        <input id="time-input" type="time" formControlName="time">
+      </div>
+    </div>
 
-  <div class="form-group">
-    <label for="to-input">Ziel</label>
-    <input id="to-input" type="text" placeholder="z.B. Heidelberg" formControlName="to">
-  </div>
-  
-  <div class="form-group">
-    <label for="date-input">Datum</label>
-    <input id="date-input" type="date" formControlName="date">
-  </div>
-
-  <div class="form-group">
-    <label for="time-input">Ab (Uhrzeit)</label>
-    <input id="time-input" type="time" formControlName="time">
-  </div>
-
-  <div class="form-group">
-    <label for="seats-input">Freie Plätze (mind.)</label>
-    <input id="seats-input" type="number" min="1" placeholder="1" formControlName="seats">
-  </div>
-  
-  <button type="submit">Suchen</button>
-</form>
-
-<pre>{{ searchForm.value | json }}</pre>
+    <div class="form-actions">
+      <button type="submit" class="search-button">Suchen</button>
+    </div>
+  </form>
+</div>

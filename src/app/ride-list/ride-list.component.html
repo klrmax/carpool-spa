@@ -4,8 +4,7 @@
   </p>
 
   <div *ngFor="let ride of rides" class="ride-card">
-    <!-- Debug output -->
-    <pre style="font-size: 12px;">{{ ride | json }}</pre>
+
     
     <h3>{{ ride.departure_location || 'Loading...' }} → {{ ride.destination_location || 'Loading...' }}</h3>
     <p>{{ ride.departure_time ? (ride.departure_time | date: 'EEEE, dd.MM.yyyy • HH:mm') + ' Uhr' : 'Loading...' }}</p>
