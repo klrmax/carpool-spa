@@ -26,11 +26,14 @@
     </div>
     
     <div class="driver-info">
-      <h3>Driver Information</h3>
-      <p>
-        <strong>Name:</strong> {{ ride.driver.name }}
-      </p>
-    </div>
+  <h3>Driver Information</h3>
+  <p>
+    <strong>Name:</strong> {{ ride.driver?.name || 'N/A' }}
+  </p>
+  <p *ngIf="ride.driver?.email">
+    <strong>Email:</strong> {{ ride.driver.email }}
+  </p>
+</div>
     
     <div class="seats-info">
       <h3>Availability</h3>

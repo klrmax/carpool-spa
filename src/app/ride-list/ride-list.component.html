@@ -26,10 +26,10 @@
               <span class="value">{{ ride.departureTime | date: 'EEEE, MMM dd, yyyy • HH:mm' }}</span>
             </div>
             
-            <div class="detail-item">
-              <span class="label">Driver:</span>
-              <span class="value">{{ ride.driver.name }}</span>
-            </div>
+         <div class="detail-item">
+            <span class="label">Driver:</span>
+            <span class="value">{{ ride.driver?.name || 'N/A' }}</span>
+          </div>
             
             <div class="detail-item">
               <span class="label">Available Seats:</span>

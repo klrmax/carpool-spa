@@ -49,11 +49,12 @@ export class RideService {
 
   loadAllRides(): void {
     this.loadingSubject.next(true);
-    this.rideGraphqlService.getAllRides().subscribe({
-      next: (rides) => {
-        this.ridesSubject.next(rides);
-        this.loadingSubject.next(false);
-      },
+  this.rideGraphqlService.getAllRides().subscribe({
+  next: (rides) => {
+    console.log('Loaded rides:', rides);
+    this.ridesSubject.next(rides);
+    this.loadingSubject.next(false);
+  },
       error: (error) => {
         console.error('Error loading rides:', error);
         this.loadingSubject.next(false);
