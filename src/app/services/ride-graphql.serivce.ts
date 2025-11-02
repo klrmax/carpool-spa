@@ -29,13 +29,12 @@ export class RideGraphqlService {
     start?: string,
     destination?: string,
     date?: string,
-    time?: string,
-    seats?: number
-  ): Observable<Ride[]> {
+    time?: string
+    ): Observable<Ride[]> {
     return this.apollo
       .watchQuery<{ searchRides: Ride[] }>({
         query: SEARCH_RIDES,
-        variables: { start, destination, date, time, seats }
+        variables: { start, destination, date, time}
       })
       .valueChanges.pipe(
         map((result) => result.data.searchRides)

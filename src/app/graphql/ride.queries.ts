@@ -24,7 +24,6 @@ export const SEARCH_RIDES = gql`
       destination: $destination
       date: $date
       time: $time
-      seats: $seats
     ) {
       id
       startLocation

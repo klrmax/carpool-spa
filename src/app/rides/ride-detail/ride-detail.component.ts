@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { Ride, RideService } from '../../services/ride.service';
+import { Ride, RideId, RideService } from '../../services/ride.service';
 
 @Component({
   selector: 'app-ride-detail',
@@ -12,7 +12,7 @@ import { Ride, RideService } from '../../services/ride.service';
   styleUrls: ['./ride-detail.component.css']
 })
 export class RideDetailComponent implements OnInit {
-  public ride$!: Observable<Ride | undefined>;
+  public ride$!: Observable<RideId | undefined>;
   public isRequesting = false;
   public requestSuccess = false;
   public requestError: string | null = null;
@@ -31,7 +31,7 @@ export class RideDetailComponent implements OnInit {
   
   this.ride$.subscribe({
     next: (ride) => {
-      console.log('✅ Received ride data:', ride);
+      console.log('Received ride data:', ride);
       console.log('Driver:', ride?.driver);
     },
     error: (error) => {

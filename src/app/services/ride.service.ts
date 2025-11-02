@@ -8,6 +8,19 @@ import { GET_ALL_RIDES } from '../graphql/ride.queries';
 
 type RideRequest = any; // Define a proper interface for RideRequest
 
+export interface RideId {
+  id: number;
+  departure_location: string;
+  destination_location: string;
+  departure_time: string;
+  seats_available: number;
+  driver: {
+    id?: number;
+    username: string;
+    email?: string;
+  };
+  created_at?: string;
+}
 export interface Ride {
   id: number;
   startLocation: string;
@@ -21,6 +34,7 @@ export interface Ride {
   };
   created_at?: string;
 }
+
 export interface SearchTerms {
   from?: string | null;
   to?: string | null;
@@ -79,14 +93,12 @@ export class RideService {
     if (terms.to) searchParams.destination = terms.to;
     if (terms.date) searchParams.date = terms.date;
     if (terms.time) searchParams.time = terms.time;
-    if (terms.seats) searchParams.seats = terms.seats;
 
     this.rideGraphqlService.searchRides(
       searchParams.start,
       searchParams.destination,
       searchParams.date,
-      searchParams.time,
-      searchParams.seats
+      searchParams.time
     ).subscribe({
       next: (rides) => {
         this.ridesSubject.next(rides);
@@ -103,9 +115,9 @@ export class RideService {
     return !!(terms.from || terms.to || terms.date || terms.time || terms.seats);
   }
 
-getRideById(id: number): Observable<Ride | undefined> {
+getRideById(id: number): Observable<RideId | undefined> {
   console.log(`Fetching ride by ID: ${id}`);
-  return this.http.get<Ride>(`${this.baseUrl}/ride/${id}`);
+  return this.http.get<RideId>(`${this.baseUrl}/ride/${id}`);
 }
 
   createRide(rideData: any): Observable<any> {
@@ -115,8 +127,9 @@ getRideById(id: number): Observable<Ride | undefined> {
 
   sendRideRequest(rideId: number): Observable<any> {
     console.log(`Sending ride request for ride ID: ${rideId}`);
-    return this.http.post(`${this.baseUrl}/ride-request`, { rideId });
+    return this.http.post(`${this.baseUrl}/ride-request/${rideId}`, {});
   }
+
 
   getMyCreatedRides(): Observable<Ride[]> {
     console.log('Fetching my created rides');

@@ -8,37 +8,37 @@
     <div class="route-info">
       <h3>Route</h3>
       <p>
-        <strong>From:</strong> {{ ride.startLocation }}
+        <strong>From:</strong> {{ ride.departure_location }}
       </p>
       <p>
-        <strong>To:</strong> {{ ride.destination }}
+        <strong>To:</strong> {{ ride.destination_location }}
       </p>
     </div>
     
     <div class="time-info">
       <h3>Schedule</h3>
       <p>
-        <strong>Date:</strong> {{ ride.departureTime | date: 'EEEE, MMM dd, yyyy' }}
+        <strong>Date:</strong> {{ ride.departure_time | date: 'EEEE, MMM dd, yyyy' }}
       </p>
       <p>
-        <strong>Departure:</strong> {{ ride.departureTime | date: 'HH:mm' }}
+        <strong>Departure:</strong> {{ ride.departure_time | date: 'HH:mm' }}
       </p>
     </div>
     
     <div class="driver-info">
   <h3>Driver Information</h3>
   <p>
-    <strong>Name:</strong> {{ ride.driver?.name || 'N/A' }}
+    <strong>Name:</strong> {{ ride.driver?.username || 'N/A' }}
   </p>
   <p *ngIf="ride.driver?.email">
-    <strong>Email:</strong> {{ ride.driver.email }}
+    <strong>Email:</strong> {{ ride.driver?.email }}
   </p>
 </div>
     
     <div class="seats-info">
       <h3>Availability</h3>
       <p>
-        <strong>Available Seats:</strong> {{ ride.availableSeats }}
+        <strong>Available Seats:</strong> {{ ride.seats_available }}
       </p>
     </div>
   </div>
