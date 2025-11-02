@@ -17,7 +17,7 @@
         <div *ngFor="let ride of createdRides" class="ride-card">
           <h3>{{ ride.departure_location }} → {{ ride.destination_location }}</h3>
           <p>Date: {{ ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
-          <p>Available Seats: {{ ride.available_seats }}</p>
+          <p>Available Seats: {{ ride.seats_available }}</p>
           <button [routerLink]="['/rides', ride.id]">Details</button>
         </div>
       </div>
