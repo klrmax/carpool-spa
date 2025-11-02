@@ -24,9 +24,23 @@ export class RideDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.rideId = +this.route.snapshot.paramMap.get('id')!;
-    this.ride$ = this.rideService.getRideById(this.rideId);
-  }
+  this.rideId = +this.route.snapshot.paramMap.get('id')!;
+  console.log('Loading ride with ID:', this.rideId);
+  
+  this.ride$ = this.rideService.getRideById(this.rideId);
+  
+  this.ride$.subscribe({
+    next: (ride) => {
+      console.log('✅ Received ride data:', ride);
+      console.log('Driver:', ride?.driver);
+    },
+    error: (error) => {
+      console.error('❌ Error loading ride:', error);
+      console.error('Error status:', error.status);
+      console.error('Error message:', error.message);
+    }
+  });
+}
   
 
   sendRequest(): void {
