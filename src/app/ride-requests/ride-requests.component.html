@@ -1,7 +1,8 @@
 <div class="requests-container">
   <div *ngIf="loading" class="loading">
-    Anfragen werden geladen...
+    Loading requests...
   </div>
+
 
   <div *ngIf="error" class="error">
     {{ error }}
@@ -10,23 +11,23 @@
   <div *ngIf="!loading && !error">
     <!-- Incoming Requests -->
     <section class="requests-section">
-      <h2>Eingehende Anfragen</h2>
+      <h2>Incoming Requests</h2>
       <div *ngIf="openRequests.length === 0" class="no-requests">
-        Keine offenen Anfragen vorhanden.
+        No open requests available.
       </div>
       <div class="request-list">
         <div *ngFor="let request of openRequests" class="request-card">
           <div class="request-info">
-            <h3>Anfrage von {{ request.user.name }}</h3>
-            <p>Fahrt: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</p>
-            <p>Datum: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
+            <h3>Request from {{ request.user.name }}</h3>
+            <p>Ride: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</p>
+            <p>Date: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
           </div>
           <div class="request-actions">
             <button (click)="handleRequest(request.id, 'accept')" class="accept">
-              Akzeptieren
+              Accept
             </button>
             <button (click)="handleRequest(request.id, 'reject')" class="reject">
-              Ablehnen
+              Reject
             </button>
           </div>
         </div>
@@ -35,17 +36,17 @@
 
     <!-- My Sent Requests -->
     <section class="requests-section">
-      <h2>Meine Anfragen</h2>
+      <h2>My Sent Requests</h2>
       <div *ngIf="myRequests.length === 0" class="no-requests">
-        Keine gesendeten Anfragen vorhanden.
+        No sent requests available.
       </div>
       <div class="request-list">
         <div *ngFor="let request of myRequests" class="request-card">
           <div class="request-info">
-            <h3>Fahrt: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</h3>
-            <p>Datum: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
-            <p>Status: {{ request.status === 'pending' ? 'Ausstehend' : 
-                         request.status === 'accepted' ? 'Akzeptiert' : 'Abgelehnt' }}</p>
+            <h3>Ride: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</h3>
+            <p>Date: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
+            <p>Status: {{ request.status === 'pending' ? 'Pending' : 
+                         request.status === 'accepted' ? 'Accepted' : 'Rejected' }}</p>
           </div>
         </div>
       </div>

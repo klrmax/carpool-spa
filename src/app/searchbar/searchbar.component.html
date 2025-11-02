@@ -2,28 +2,28 @@
   <form class="search-form" [formGroup]="searchForm" (ngSubmit)="onSearch()">
     <div class="input-group">
       <div class="form-field">
-        <label for="from-input">Von</label>
-        <input id="from-input" type="text" placeholder="Start" formControlName="from">
+        <label for="from-input">From</label>
+        <input id="from-input" type="text" placeholder="Departure Location" formControlName="from">
       </div>
       <div class="form-field">
-        <label for="to-input">Nach</label>
-        <input id="to-input" type="text" placeholder="Ziel" formControlName="to">
+        <label for="to-input">To</label>
+        <input id="to-input" type="text" placeholder="Destination Location" formControlName="to">
       </div>
     </div>
 
     <div class="input-group">
       <div class="form-field date-field">
-        <label for="date-input">Datum</label>
+        <label for="date-input">Date</label>
         <input id="date-input" type="date" formControlName="date">
       </div>
       <div class="form-field time-field">
-        <label for="time-input">Uhrzeit</label>
+        <label for="time-input">Time</label>
         <input id="time-input" type="time" formControlName="time">
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="search-button">Suchen</button>
+      <button type="submit" class="search-button">Search</button>
     </div>
   </form>
 </div>

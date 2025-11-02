@@ -8,7 +8,7 @@
 
   <div class="content-area">
     <div class="train-connections">
-      <h3>Alternative Bahnverbindungen</h3>
+      <h3>Alternative Train Connections</h3>
       <div class="train-list">
         <div *ngFor="let connection of trainConnections" class="train-card">
           <div class="train-time">
@@ -18,7 +18,7 @@
           </div>
           <div class="train-stations">
             <div>{{ connection.departure_station }}</div>
-            <div class="transfers">{{ connection.transfers }} Umstieg(e)</div>
+            <div class="transfers">{{ connection.transfers }} Transfers</div>
             <div>{{ connection.arrival_station }}</div>
           </div>
           <div class="train-price">

@@ -1,18 +1,18 @@
 <div *ngIf="rides$ | async as rides; else loading">
   <p *ngIf="rides.length === 0">
-    Aktuell sind keine Fahrten verfügbar.
-  </p>
+At the moment, there are no rides available.
+ </p>
 
   <div *ngFor="let ride of rides" class="ride-card">
 
     
     <h3>{{ ride.departure_location || 'Loading...' }} → {{ ride.destination_location || 'Loading...' }}</h3>
     <p>{{ ride.departure_time ? (ride.departure_time | date: 'EEEE, dd.MM.yyyy • HH:mm') + ' Uhr' : 'Loading...' }}</p>
-    <p>Fahrer: {{ ride.driver.name || 'Loading...' }}</p>
-    <a [routerLink]="['/rides', ride.id]">Auswählen →</a>
+    <p>Driver: {{ ride.driver.name || 'Loading...' }}</p>
+    <a [routerLink]="['/rides', ride.id]">Select →</a>
   </div>
 </div>
 
 <ng-template #loading>
-  <p>Fahrten werden geladen...</p>
+  <p>Loading rides...</p>
 </ng-template>
