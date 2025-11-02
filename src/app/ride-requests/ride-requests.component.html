@@ -18,7 +18,7 @@
       <div class="request-list">
         <div *ngFor="let request of openRequests" class="request-card">
           <div class="request-info">
-            <h3>Request from {{ request.user.name }}</h3>
+            <h3>Request from {{ request.passenger.name }}</h3>
             <p>Ride: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</p>
             <p>Date: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
           </div>
@@ -43,8 +43,8 @@
       <div class="request-list">
         <div *ngFor="let request of myRequests" class="request-card">
           <div class="request-info">
-            <h3>Ride: {{ request.ride.departure_location }} → {{ request.ride.destination_location }}</h3>
-            <p>Date: {{ request.ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
+            <h3>Ride: {{ request.departure_location }} → {{ request.destination_location }}</h3>
+            <p>Date: {{ request.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
             <p>Status: {{ request.status === 'pending' ? 'Pending' : 
                          request.status === 'accepted' ? 'Accepted' : 'Rejected' }}</p>
           </div>
