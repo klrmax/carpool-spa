@@ -74,12 +74,19 @@ export class RideService {
 }
   private searchRides(terms: SearchTerms): void {
     this.loadingSubject.next(true);
+    const searchParams: any = {};
+    if (terms.from) searchParams.start = terms.from;
+    if (terms.to) searchParams.destination = terms.to;
+    if (terms.date) searchParams.date = terms.date;
+    if (terms.time) searchParams.time = terms.time;
+    if (terms.seats) searchParams.seats = terms.seats;
+
     this.rideGraphqlService.searchRides(
-      terms.from || undefined,
-      terms.to || undefined,
-      terms.date || undefined,
-      terms.time || undefined,
-      terms.seats || undefined
+      searchParams.start,
+      searchParams.destination,
+      searchParams.date,
+      searchParams.time,
+      searchParams.seats
     ).subscribe({
       next: (rides) => {
         this.ridesSubject.next(rides);
