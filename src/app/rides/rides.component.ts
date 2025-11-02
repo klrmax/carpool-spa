@@ -5,6 +5,7 @@ import { RideListComponent } from '../ride-list/ride-list.component';
 import { RideService } from '../services/ride.service';
 import { TrainService, TrainConnection } from '../services/train.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rides',
@@ -19,7 +20,8 @@ export class RidesComponent implements OnDestroy {
 
   constructor(
     private rideService: RideService,
-    private trainService: TrainService
+    private trainService: TrainService,
+    private router: Router
   ) {
     // Subscribe to search terms changes
     this.searchSubscription = this.rideService.searchTermsSubject.subscribe(terms => {
@@ -42,6 +44,10 @@ export class RidesComponent implements OnDestroy {
         this.trainConnections = [];
       }
     });
+  }
+  
+  goToOtherPage() {
+    this.router.navigate(['/dashboard']);
   }
 
   ngOnDestroy() {

@@ -43,7 +43,9 @@ export class DashboardComponent implements OnInit {
       this.router.navigate([], { queryParams: {}, replaceUrl: true });
     }
   }
-
+  goToOtherPage() {
+    this.router.navigate(['/rides']);
+  }
   onSubmit(): void {
     if (this.createRideForm.valid) {
       const formValue = this.createRideForm.value;

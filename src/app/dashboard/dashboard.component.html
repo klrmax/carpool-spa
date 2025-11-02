@@ -1,11 +1,6 @@
 <div class="dashboard-container">
   <nav class="dashboard-tabs">
-    <button 
-      [class.active]="activeTab === 'rides'"
-      (click)="setActiveTab('rides')"
-      routerLink="/rides">
-      Search Rides
-      </button>
+    <button (click)="goToOtherPage()">Search for rides</button>
     <button 
       [class.active]="activeTab === 'create'"
       (click)="setActiveTab('create')">
