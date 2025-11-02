@@ -40,7 +40,6 @@ export interface SearchTerms {
   to?: string | null;
   date?: string | null;
   time?: string | null;
-  seats?: number | null;
 }
 
 @Injectable({
@@ -112,7 +111,7 @@ export class RideService {
   }
 
   private hasSearchTerms(terms: SearchTerms): boolean {
-    return !!(terms.from || terms.to || terms.date || terms.time || terms.seats);
+    return !!(terms.from || terms.to || terms.date || terms.time );
   }
 
 getRideById(id: number): Observable<RideId | undefined> {
