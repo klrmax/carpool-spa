@@ -1,59 +1,59 @@
 <div *ngIf="ride$ | async as ride; else loading" class="ride-detail">
   <div class="ride-header">
     <h2>Ride Details</h2>
-    <span class="created-at">Created at: {{ ride.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
+    <span class="created-at" *ngIf="ride.created_at">Created at: {{ ride.created_at | date: 'MMM dd, yyyy HH:mm' }}</span>
   </div>
-
+  
   <div class="ride-info">
     <div class="route-info">
       <h3>Route</h3>
       <p>
-        <strong>From:</strong> {{ ride.departure_location }}
+        <strong>From:</strong> {{ ride.startLocation }}
       </p>
       <p>
-        <strong>To:</strong> {{ ride.destination_location }}
+        <strong>To:</strong> {{ ride.destination }}
       </p>
     </div>
-
+    
     <div class="time-info">
       <h3>Schedule</h3>
       <p>
-        <strong>Date:</strong> {{ ride.departure_time | date: 'EEEE, dd.MM.yyyy' }}
+        <strong>Date:</strong> {{ ride.departureTime | date: 'EEEE, MMM dd, yyyy' }}
       </p>
       <p>
-        <strong>Departure:</strong> {{ ride.departure_time | date: 'HH:mm' }} Uhr
+        <strong>Departure:</strong> {{ ride.departureTime | date: 'HH:mm' }}
       </p>
     </div>
-
+    
     <div class="driver-info">
       <h3>Driver Information</h3>
       <p>
         <strong>Name:</strong> {{ ride.driver.name }}
       </p>
-     
     </div>
-
+    
     <div class="seats-info">
       <h3>Availability</h3>
       <p>
-        <strong>Free Seats:</strong> {{ ride.seats_available }}
+        <strong>Available Seats:</strong> {{ ride.availableSeats }}
       </p>
     </div>
   </div>
-
+  
   <div class="actions">
     <button 
       class="request-button" 
       (click)="sendRequest()"
       [disabled]="isRequesting">
-      {{ isRequesting ? 'Request is being sent...' : 'Request Ride' }}
+      {{ isRequesting ? 'Sending request...' : 'Request Ride' }}
     </button>
     <a routerLink="/rides" class="back-link">← Back to Overview</a>
   </div>
-
+  
   <div *ngIf="requestSuccess" class="success-message">
     Your request has been successfully sent!
   </div>
+  
   <div *ngIf="requestError" class="error-message">
     {{ requestError }}
   </div>

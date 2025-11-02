@@ -1,18 +1,49 @@
-<div *ngIf="rides$ | async as rides; else loading">
-  <p *ngIf="rides.length === 0">
-At the moment, there are no rides available.
- </p>
+<div class="rides-container">
 
-  <div *ngFor="let ride of rides" class="ride-card">
 
-    
-    <h3>{{ ride.departure_location || 'Loading...' }} → {{ ride.destination_location || 'Loading...' }}</h3>
-    <p>{{ ride.departure_time ? (ride.departure_time | date: 'EEEE, dd.MM.yyyy • HH:mm') + ' Uhr' : 'Loading...' }}</p>
-    <p>Driver: {{ ride.driver.name || 'Loading...' }}</p>
-    <a [routerLink]="['/rides', ride.id]">Select →</a>
+  <div *ngIf="loading$ | async" class="loading-state">
+    <p>Loading rides...</p>
+  </div>
+
+  <div *ngIf="!(loading$ | async)" class="rides-content">
+    <div *ngIf="rides$ | async as rides">
+      <div *ngIf="rides.length === 0" class="no-rides">
+        <p>No rides available at the moment.</p>
+        <p>Try adjusting your search criteria or check back later.</p>
+      </div>
+
+      <div *ngIf="rides.length > 0" class="rides-list">
+        <h2>Available Rides ({{ rides.length }})</h2>
+        
+        <div *ngFor="let ride of rides" class="ride-card">
+          <div class="ride-header">
+            <h3>{{ ride.startLocation }} → {{ ride.destination }}</h3>
+          </div>
+          
+          <div class="ride-details">
+            <div class="detail-item">
+              <span class="label">Departure:</span>
+              <span class="value">{{ ride.departureTime | date: 'EEEE, MMM dd, yyyy • HH:mm' }}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="label">Driver:</span>
+              <span class="value">{{ ride.driver.name }}</span>
+            </div>
+            
+            <div class="detail-item">
+              <span class="label">Available Seats:</span>
+              <span class="value">{{ ride.availableSeats }}</span>
+            </div>
+          </div>
+          
+          <div class="ride-actions">
+            <a [routerLink]="['/rides', ride.id]" class="select-button">
+              View Details →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-<ng-template #loading>
-  <p>Loading rides...</p>
-</ng-template>

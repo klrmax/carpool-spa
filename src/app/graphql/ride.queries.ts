@@ -2,19 +2,14 @@ import { gql } from 'apollo-angular';
 
 // Queries for fetching rides
 export const GET_ALL_RIDES = gql`
-  query GetAllRides($filters: RideFiltersInput) {
-    rides(filters: $filters) {
+  query GetAllRides {
+    getAllRides {
       id
-      departure_location
-      destination_location
-      departure_time
-      seats_available
+      startLocation
+      destination
+      departureTime
+      availableSeats
       driver {
-        id
-        name
-      }
-      passengers {
-        id
         name
       }
     }
@@ -31,16 +26,11 @@ export const SEARCH_RIDES = gql`
       seats: $seats
     ) {
       id
-      departure_location
-      destination_location
-      departure_time
-      seats_available
+      startLocation
+      destination
+      departureTime
+      availableSeats
       driver {
-        id
-        name
-      }
-      passengers {
-        id
         name
       }
     }

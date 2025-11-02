@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// Wichtig: Diese Module importieren, um mit Reactive Forms zu arbeiten
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RideService, SearchTerms } from '../services/ride.service';
 
@@ -11,8 +10,8 @@ import { RideService, SearchTerms } from '../services/ride.service';
   templateUrl: './searchbar.component.html',
   styleUrl: './searchbar.component.scss'
 })
-export class SearchbarComponent {
 
+export class SearchbarComponent {
   // Wir definieren eine Eigenschaft für unser Formular.
   // Es ist eine FormGroup, die unsere beiden Eingabefelder enthält.
   public searchForm = new FormGroup({
@@ -23,13 +22,9 @@ export class SearchbarComponent {
     time: new FormControl(''),  
     seats: new FormControl(null)
   });
-  
   constructor(private rideService: RideService) {}
 
   onSearch(): void {
-    // Hier werden wir später die Suche auslösen.
-    // Fürs Erste geben wir die Werte nur in der Browser-Konsole aus.
-this.rideService.updateSearchTerms(this.searchForm.value as SearchTerms);
-    console.log(this.searchForm.value);
-    }
+    this.rideService.updateSearchTerms(this.searchForm.value as SearchTerms);
+  }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
-
+import { RideGraphqlService } from './ride-graphql.serivce';
 import { Apollo } from 'apollo-angular';
 import { GET_ALL_RIDES } from '../graphql/ride.queries';
 
@@ -10,16 +10,23 @@ type RideRequest = any; // Define a proper interface for RideRequest
 
 export interface Ride {
   id: number;
-  departure_location: string;
-  destination_location: string;
-  departure_time: string;
-  seats_available: number;
+  startLocation: string;
+  destination: string;
+  departureTime: string;
+  availableSeats: number;
   driver: {
-    id: number;
+    id?: number;
     name: string;
-    email: string;
+    email?: string;
   };
-  created_at: string;
+  created_at?: string;
+}
+export interface SearchTerms {
+  from?: string | null;
+  to?: string | null;
+  date?: string | null;
+  time?: string | null;
+  seats?: number | null;
 }
 
 @Injectable({
@@ -27,58 +34,62 @@ export interface Ride {
 })
 export class RideService {
   private baseUrl = 'https://carpoolbff-c576f25b03e8.herokuapp.com/api';
-  private _searchTermsSubject: BehaviorSubject<SearchTerms> = new BehaviorSubject<SearchTerms>({
-    from: null,
-    to: null,
-    date: null,
-    time: null,
-    seats: null
-  });
 
-  get searchTermsSubject(): BehaviorSubject<SearchTerms> {
-    return this._searchTermsSubject;
+  private ridesSubject = new BehaviorSubject<any[]>([]);
+  public rides$ = this.ridesSubject.asObservable();
+
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+  public loading$ = this.loadingSubject.asObservable();
+
+  public searchTermsSubject = new BehaviorSubject<SearchTerms>({});
+  public searchTerms$ = this.searchTermsSubject.asObservable();
+
+  constructor( private http: HttpClient, private rideGraphqlService: RideGraphqlService) {}
+  
+
+  loadAllRides(): void {
+    this.loadingSubject.next(true);
+    this.rideGraphqlService.getAllRides().subscribe({
+      next: (rides) => {
+        this.ridesSubject.next(rides);
+        this.loadingSubject.next(false);
+      },
+      error: (error) => {
+        console.error('Error loading rides:', error);
+        this.loadingSubject.next(false);
+      }
+    });
   }
 
-  constructor(private apollo: Apollo, private http: HttpClient) { }
-
-  // Update der Suchbegriffe
   updateSearchTerms(terms: SearchTerms): void {
-    this._searchTermsSubject.next(terms);
+    this.searchTermsSubject.next(terms);
+  }
+
+  private searchRides(terms: SearchTerms): void {
+    this.loadingSubject.next(true);
+    this.rideGraphqlService.searchRides(
+      terms.from || undefined,
+      terms.to || undefined,
+      terms.date || undefined,
+      terms.time || undefined,
+      terms.seats || undefined
+    ).subscribe({
+      next: (rides) => {
+        this.ridesSubject.next(rides);
+        this.loadingSubject.next(false);
+      },
+      error: (error) => {
+        console.error('Error searching rides:', error);
+        this.loadingSubject.next(false);
+      }
+    });
+  }
+
+  private hasSearchTerms(terms: SearchTerms): boolean {
+    return !!(terms.from || terms.to || terms.date || terms.time || terms.seats);
   }
 
   
-  getRides(): Observable<Ride[]> {
-    return this.searchTermsSubject.pipe(
-      switchMap(terms => {
-        return this.apollo.watchQuery<{ rides: Ride[] }>({
-          query: GET_ALL_RIDES,
-          variables: {
-            filters: {
-              departureLocation: terms.from || null,
-              destinationLocation: terms.to || null,
-              departureTime: terms.date ? `${terms.date}T${terms.time || '00:00'}:00` : null,
-              seatsAvailable: terms.seats || null
-            }
-          }
-        }).valueChanges.pipe(
-          map(result => {
-            const rides = result.data?.rides || [];
-            return rides.filter(ride => {
-              if (terms.seats && terms.seats > 0) {
-                return ride.seats_available >= terms.seats;
-              }
-              return true;
-            });
-          }),
-          catchError(error => {
-            console.error('Fehler beim Abrufen der Fahrten:', error);
-            return of([]);
-          })
-        );
-      })
-    );
-  }
-
   getRideById(id: number): Observable<Ride | undefined> {
     console.log(`Fetching ride by ID: ${id}`);
     return this.http.get<Ride>(`${this.baseUrl}/ride/${id}`);
@@ -125,10 +136,3 @@ export class RideService {
   }
 }
 
-export interface SearchTerms {
-  from: string | null;
-  to: string | null;
-  date: string | null;
-  time: string | null;
-  seats: number | null;
-}
