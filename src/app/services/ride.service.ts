@@ -125,9 +125,9 @@ getRideById(id: number): Observable<RideId | undefined> {
     return this.http.post(`${this.baseUrl}/ride`, rideData);
   }
 
-  sendRideRequest(rideId: number): Observable<any> {
-    console.log(`Sending ride request for ride ID: ${rideId}`);
-    return this.http.post(`${this.baseUrl}/ride-request/${rideId}`, {});
+  sendRideRequest(id: number): Observable<any> {
+    console.log(`Sending ride request for ride ID: ${id}`);
+    return this.http.post(`${this.baseUrl}/ride-request/${id}`, {});
   }
 
 
