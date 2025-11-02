@@ -26,8 +26,9 @@ export class TrainService {
   getTrainConnections(start: string, destination: string, date: string, hour: string): Observable<TrainConnection[]> {
     
 
+     const formattedHour = this.formatHourToHHMM(hour);
 
-    return this.http.get<TrainConnection[]>(`${this.baseUrl}/trains/${start}/${destination}/${date}/${hour}`).pipe(
+    return this.http.get<TrainConnection[]>(`${this.baseUrl}/trains/${start}/${destination}/${date}/${hour}+00`).pipe(
       catchError(error => {
         console.error('Error fetching train connections:', error);
         return of([]);
@@ -35,5 +36,9 @@ export class TrainService {
     );
   }
 
+  // HH:MM → HHMM
+  private formatHourToHHMM(hourString: string): string {
+    return hourString.replace(':', '');
+  }
 
 }
