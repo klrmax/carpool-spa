@@ -1,77 +1,82 @@
 <div class="dashboard-container">
   <nav class="dashboard-tabs">
+    <a routerLink="/rides" 
+       class="dashboard-button"
+       routerLinkActive="active">
+      Search Rides
+    </a>
     <button 
       [class.active]="activeTab === 'create'"
       (click)="setActiveTab('create')">
-      Neue Fahrt erstellen
+      Create New Ride
     </button>
     <button 
       [class.active]="activeTab === 'myRides'"
       (click)="setActiveTab('myRides')">
-      Meine Fahrten
+      My Rides
     </button>
     <button 
       [class.active]="activeTab === 'requests'"
       (click)="setActiveTab('requests')">
-      Anfragen
+      Requests
     </button>
   </nav>
 
   <div class="dashboard-content" [ngSwitch]="activeTab">
     <div *ngSwitchCase="'create'">
       <div class="create-ride-form">
-        <h2>Neue Fahrt erstellen</h2>
+        <h2>Create New Ride</h2>
         <form [formGroup]="createRideForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
-            <label for="from">Von:</label>
+            <label for="from">From:</label>
             <input id="from" 
                    type="text" 
                    formControlName="from" 
                    required
                    [class.is-invalid]="createRideForm.get('from')?.invalid && createRideForm.get('from')?.touched">
             <div class="error-message" *ngIf="createRideForm.get('from')?.invalid && createRideForm.get('from')?.touched">
-              Bitte geben Sie einen Startort an
+              Please enter a starting location
             </div>
           </div>
 
           <div class="form-group">
-            <label for="to">Nach:</label>
+            <label for="to">To:</label>
             <input id="to" 
                    type="text" 
                    formControlName="to" 
                    required
                    [class.is-invalid]="createRideForm.get('to')?.invalid && createRideForm.get('to')?.touched">
             <div class="error-message" *ngIf="createRideForm.get('to')?.invalid && createRideForm.get('to')?.touched">
-              Bitte geben Sie einen Zielort an
+              Please enter a destination
             </div>
           </div>
 
           <div class="form-group">
-            <label for="date">Datum:</label>
+            <label for="date">Date:</label>
             <input id="date" 
                    type="date" 
                    formControlName="date" 
                    required
                    [class.is-invalid]="createRideForm.get('date')?.invalid && createRideForm.get('date')?.touched">
             <div class="error-message" *ngIf="createRideForm.get('date')?.invalid && createRideForm.get('date')?.touched">
-              Bitte wählen Sie ein Datum
+              Please select a date
             </div>
           </div>
 
           <div class="form-group">
-            <label for="time">Uhrzeit:</label>
+            <label for="time">Time:</label>
             <input id="time" 
                    type="time" 
                    formControlName="time" 
                    required
                    [class.is-invalid]="createRideForm.get('time')?.invalid && createRideForm.get('time')?.touched">
             <div class="error-message" *ngIf="createRideForm.get('time')?.invalid && createRideForm.get('time')?.touched">
-              Bitte wählen Sie eine Uhrzeit
+              Please select a time
             </div>
           </div>
 
           <div class="form-group">
-            <label for="seats">Verfügbare Plätze:</label>
+            <label for="seats">Available Seats:</label>
             <input id="seats" 
                    type="number" 
                    formControlName="seats" 
@@ -79,12 +84,12 @@
                    required
                    [class.is-invalid]="createRideForm.get('seats')?.invalid && createRideForm.get('seats')?.touched">
             <div class="error-message" *ngIf="createRideForm.get('seats')?.invalid && createRideForm.get('seats')?.touched">
-              <span *ngIf="createRideForm.get('seats')?.hasError('required')">Bitte geben Sie die Anzahl der Plätze an</span>
-              <span *ngIf="createRideForm.get('seats')?.hasError('min')">Mindestens ein Platz muss verfügbar sein</span>
+              <span *ngIf="createRideForm.get('seats')?.hasError('required')">Please enter the number of seats</span>
+              <span *ngIf="createRideForm.get('seats')?.hasError('min')">At least one seat must be available</span>
             </div>
           </div>
 
-          <button type="submit" [disabled]="!createRideForm.valid">Fahrt erstellen</button>
+          <button type="submit" [disabled]="!createRideForm.valid">Create Ride</button>
         </form>
       </div>
     </div>

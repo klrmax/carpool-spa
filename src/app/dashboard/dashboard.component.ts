@@ -61,13 +61,8 @@ export class DashboardComponent implements OnInit {
           this.setActiveTab('myRides');
         },
         error: (error: any) => {
-          if (error.status === 401) {
-            this.notificationService.showError('Bitte melden Sie sich an, um eine Fahrt zu erstellen.');
-            // Redirect zur MPA-Login-Seite
-            window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/Login.html';
-          } else {
-            this.notificationService.showError(error.message || 'Fehler beim Erstellen der Fahrt. Bitte versuchen Sie es später erneut.');
-          }
+          // Die 401-Fehlerbehandlung wird global vom AuthInterceptor übernommen.
+          this.notificationService.showError(error.message || 'Fehler beim Erstellen der Fahrt. Bitte versuchen Sie es später erneut.');
         }
       });
     } else {

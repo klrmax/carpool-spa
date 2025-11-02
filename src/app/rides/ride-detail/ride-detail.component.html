@@ -1,32 +1,32 @@
 <div *ngIf="ride$ | async as ride; else loading" class="ride-detail">
   <div class="ride-header">
-    <h2>Fahrt Details</h2>
-    <span class="created-at">Erstellt am: {{ ride.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
+    <h2>Ride Details</h2>
+    <span class="created-at">Created at: {{ ride.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
   </div>
 
   <div class="ride-info">
     <div class="route-info">
       <h3>Route</h3>
       <p>
-        <strong>Von:</strong> {{ ride.departure_location }}
+        <strong>From:</strong> {{ ride.departure_location }}
       </p>
       <p>
-        <strong>Nach:</strong> {{ ride.destination_location }}
+        <strong>To:</strong> {{ ride.destination_location }}
       </p>
     </div>
 
     <div class="time-info">
-      <h3>Zeitplan</h3>
+      <h3>Schedule</h3>
       <p>
-        <strong>Datum:</strong> {{ ride.departure_time | date: 'EEEE, dd.MM.yyyy' }}
+        <strong>Date:</strong> {{ ride.departure_time | date: 'EEEE, dd.MM.yyyy' }}
       </p>
       <p>
-        <strong>Abfahrt:</strong> {{ ride.departure_time | date: 'HH:mm' }} Uhr
+        <strong>Departure:</strong> {{ ride.departure_time | date: 'HH:mm' }} Uhr
       </p>
     </div>
 
     <div class="driver-info">
-      <h3>Fahrer Information</h3>
+      <h3>Driver Information</h3>
       <p>
         <strong>Name:</strong> {{ ride.driver.name }}
       </p>
@@ -34,9 +34,9 @@
     </div>
 
     <div class="seats-info">
-      <h3>Verfügbarkeit</h3>
+      <h3>Availability</h3>
       <p>
-        <strong>Freie Plätze:</strong> {{ ride.seats_available }}
+        <strong>Free Seats:</strong> {{ ride.seats_available }}
       </p>
     </div>
   </div>
@@ -46,13 +46,13 @@
       class="request-button" 
       (click)="sendRequest()"
       [disabled]="isRequesting">
-      {{ isRequesting ? 'Anfrage wird gesendet...' : 'Mitfahrt anfragen' }}
+      {{ isRequesting ? 'Request is being sent...' : 'Request Ride' }}
     </button>
-    <a routerLink="/rides" class="back-link">← Zurück zur Übersicht</a>
+    <a routerLink="/rides" class="back-link">← Back to Overview</a>
   </div>
 
   <div *ngIf="requestSuccess" class="success-message">
-    Deine Anfrage wurde erfolgreich gesendet!
+    Your request has been successfully sent!
   </div>
   <div *ngIf="requestError" class="error-message">
     {{ requestError }}
@@ -61,6 +61,6 @@
 
 <ng-template #loading>
   <div class="loading">
-    <p>Fahrtdetails werden geladen...</p>
+    <p>Loading ride details...</p>
   </div>
 </ng-template>
