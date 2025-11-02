@@ -24,12 +24,17 @@ export class TrainService {
   constructor(private http: HttpClient) { }
 
   getTrainConnections(start: string, destination: string, date: string, hour: string): Observable<TrainConnection[]> {
-    
 
-    
 
-    return this.http.get<TrainConnection[]>(`${this.baseUrl}/trains/${start}/${destination}/${date}/${hour}00`).pipe(
-      catchError(error => {
+      return this.http.get<TrainConnection[]>(`${this.baseUrl}/trains`, {
+      params: {
+        start: start,
+        destination: destination,
+        date: date,
+        hour: hour + '00'
+      }
+        }).pipe(
+        catchError(error => {
         console.error('Error fetching train connections:', error);
         return of([]);
       })
