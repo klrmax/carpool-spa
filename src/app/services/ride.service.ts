@@ -63,9 +63,15 @@ export class RideService {
   }
 
   updateSearchTerms(terms: SearchTerms): void {
-    this.searchTermsSubject.next(terms);
+  this.searchTermsSubject.next(terms);
+  
+  // Wenn Suchkriterien vorhanden sind, suche. Sonst lade alle Fahrten.
+  if (this.hasSearchTerms(terms)) {
+    this.searchRides(terms);
+  } else {
+    this.loadAllRides();
   }
-
+}
   private searchRides(terms: SearchTerms): void {
     this.loadingSubject.next(true);
     this.rideGraphqlService.searchRides(
