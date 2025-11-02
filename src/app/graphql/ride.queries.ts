@@ -16,6 +16,7 @@ export const GET_ALL_RIDES = gql`
   }
 `;
 
+
 export const SEARCH_RIDES = gql`
   query SearchRides($start: String, $destination: String, $date: String, $time: String, $seats: Int) {
     searchRides(
@@ -33,6 +34,23 @@ export const SEARCH_RIDES = gql`
       driver {
         name
       }
+    }
+  }
+`;
+export const GET_RIDE_BY_ID = gql`
+  query GetRideById($id: Int!) {
+    getRideById(id: $id) {
+      id
+      startLocation
+      destination
+      departureTime
+      availableSeats
+      driver {
+        id
+        name
+        email
+      }
+      created_at
     }
   }
 `;

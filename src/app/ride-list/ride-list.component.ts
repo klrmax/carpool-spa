@@ -26,4 +26,7 @@ export class RideListComponent implements OnInit {
   ngOnInit(): void {
     this.rideService.loadAllRides();
   }
+  trackByRideId(index: number, ride: Ride): number {
+  return ride.id;
+}
 }

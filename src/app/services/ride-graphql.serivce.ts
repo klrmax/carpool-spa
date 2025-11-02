@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GET_ALL_RIDES, SEARCH_RIDES } from '../graphql/ride.queries';
+import { GET_ALL_RIDES, SEARCH_RIDES, GET_RIDE_BY_ID} from '../graphql/ride.queries';
 import { Ride } from '../services/ride.service';
 
 
@@ -41,4 +41,14 @@ export class RideGraphqlService {
         map((result) => result.data.searchRides)
       );
   }
+  getRideById(id: number): Observable<Ride | undefined> {
+  return this.apollo
+    .watchQuery<{ getRideById: Ride }>({
+      query: GET_RIDE_BY_ID,
+      variables: { id }
+    })
+    .valueChanges.pipe(
+      map((result) => result.data.getRideById)
+    );
+}
 }

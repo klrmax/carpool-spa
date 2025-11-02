@@ -89,11 +89,10 @@ export class RideService {
     return !!(terms.from || terms.to || terms.date || terms.time || terms.seats);
   }
 
-  
-  getRideById(id: number): Observable<Ride | undefined> {
-    console.log(`Fetching ride by ID: ${id}`);
-    return this.http.get<Ride>(`${this.baseUrl}/ride/${id}`);
-  }
+ getRideById(id: number): Observable<Ride | undefined> {
+  console.log(`Fetching ride by ID: ${id}`);
+  return this.rideGraphqlService.getRideById(id);
+}
 
   createRide(rideData: any): Observable<any> {
     console.log('Creating ride with data:', rideData);

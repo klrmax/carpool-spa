@@ -27,6 +27,7 @@ export class RideDetailComponent implements OnInit {
     this.rideId = +this.route.snapshot.paramMap.get('id')!;
     this.ride$ = this.rideService.getRideById(this.rideId);
   }
+  
 
   sendRequest(): void {
     if (this.isRequesting) return;

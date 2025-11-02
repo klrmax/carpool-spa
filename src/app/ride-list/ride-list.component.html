@@ -15,7 +15,7 @@
       <div *ngIf="rides.length > 0" class="rides-list">
         <h2>Available Rides ({{ rides.length }})</h2>
         
-        <div *ngFor="let ride of rides" class="ride-card">
+    <div *ngFor="let ride of rides; trackBy: trackByRideId" class="ride-card">
           <div class="ride-header">
             <h3>{{ ride.startLocation }} → {{ ride.destination }}</h3>
           </div>
