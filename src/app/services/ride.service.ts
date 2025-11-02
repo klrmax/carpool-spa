@@ -153,12 +153,12 @@ getRideById(id: number): Observable<RideId | undefined> {
 
   acceptRequest(requestId: number): Observable<any> {
     console.log(`Accepting request with ID: ${requestId}`);
-    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, { status: 'accepted' });
+    return this.http.patch(`${this.baseUrl}/ride-request?requestId=${requestId}`, { status: 'accepted' });
   }
 
   rejectRequest(requestId: number): Observable<any> {
     console.log(`Rejecting request with ID: ${requestId}`);
-    return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, { status: 'rejected' });
+    return this.http.patch(`${this.baseUrl}/ride-request?requestId=${requestId}`,, { status: 'rejected' });
   }
 }
 
