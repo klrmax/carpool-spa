@@ -25,6 +25,11 @@ export class SearchbarComponent {
   constructor(private rideService: RideService) {}
 
   onSearch(): void {
+    
+    console.log('Form Value:', this.searchForm.value);
+    console.log('Date:', this.searchForm.value.date);
+    console.log('Time:', this.searchForm.value.time);
+    
     this.rideService.updateSearchTerms(this.searchForm.value as SearchTerms);
   }
 }
