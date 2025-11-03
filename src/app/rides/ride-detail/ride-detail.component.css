@@ -2,6 +2,9 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 24px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .ride-header {
@@ -14,6 +17,8 @@
 .ride-header h2 {
   margin: 0;
   color: #333;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .created-at {
@@ -29,19 +34,22 @@
 }
 
 .ride-info h3 {
-  color: #EC0016;
+  color: #667eea;
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 1.2em;
+  font-weight: 600;
 }
 
 .ride-info p {
   margin: 8px 0;
   line-height: 1.5;
+  color: #555;
 }
 
 .ride-info strong {
   color: #333;
+  font-weight: 600;
 }
 
 .actions {
@@ -52,34 +60,37 @@
 }
 
 .request-button {
-  background-color: #EC0016;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .request-button:hover:not(:disabled) {
-  background-color: #B20012;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .request-button:disabled {
-  background-color: #ccc;
+  background: #ccc;
   cursor: not-allowed;
 }
 
 .back-link {
-  color: #666;
+  color: #667eea;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .back-link:hover {
-  color: #333;
+  color: #764ba2;
 }
 
 .success-message {
@@ -88,20 +99,25 @@
   background-color: #e6ffe6;
   border: 1px solid #b3ffb3;
   color: #008000;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 .error-message {
   margin-top: 16px;
   padding: 12px;
-  background-color: #ffe6e6;
-  border: 1px solid #ffb3b3;
-  color: #cc0000;
-  border-radius: 4px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 .loading {
   text-align: center;
   padding: 48px;
-  color: #666;
+  color: #999;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }

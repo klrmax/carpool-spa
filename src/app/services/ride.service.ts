@@ -120,9 +120,15 @@ export class RideService {
         console.error('Error searching rides:', error);
         this.ridesSubject.next([]);
         // Benutzerfreundliche Fehlermeldung basierend auf dem Fehlertyp
-        const errorMessage = error?.message?.toLowerCase().includes('validation') 
-          ? 'Ungültige Suchkriterien. Bitte überprüfen Sie Ihre Eingabe.'
-          : 'Fehler bei der Suche. Bitte versuchen Sie es später erneut.';
+        let errorMessage = 'Fehler bei der Suche. Bitte versuchen Sie es später erneut.';
+        
+        if (error?.message?.toLowerCase().includes('validation')) {
+          errorMessage = 'Ungültige Suchkriterien. Bitte überprüfen Sie Ihre Eingabe.';
+        } else if (error?.message?.toLowerCase().includes('keine passenden') || 
+                   error?.message?.toLowerCase().includes('keine freien')) {
+          errorMessage = 'Keine Fahrten mit freien Plätzen gefunden. Versuchen Sie andere Kriterien.';
+        }
+        
         this.errorSubject.next(errorMessage);
         this.loadingSubject.next(false);
       }
