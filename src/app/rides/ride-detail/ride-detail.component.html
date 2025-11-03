@@ -50,6 +50,12 @@
       [disabled]="isRequesting">
       {{ isRequesting ? 'Sending request...' : 'Request Ride' }}
     </button>
+    <button 
+      class="delete-button" 
+      (click)="deleteRide()"
+      [disabled]="isDeleting">
+      {{ isDeleting ? 'Deleting...' : 'Delete Ride' }}
+    </button>
     <a routerLink="/rides" class="back-link">← Back to Overview</a>
   </div>
   
@@ -59,6 +65,14 @@
   
   <div *ngIf="requestError" class="error-message">
     {{ requestError }}
+  </div>
+
+  <div *ngIf="deleteSuccess" class="success-message">
+    Die Fahrt wurde erfolgreich gelöscht! Weitergeleitet...
+  </div>
+  
+  <div *ngIf="deleteError" class="error-message">
+    {{ deleteError }}
   </div>
 </div>
 

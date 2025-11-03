@@ -226,5 +226,10 @@ getRideById(id: number): Observable<RideId | undefined> {
     console.log(`Rejecting request with ID: ${requestId}`);
     return this.http.patch(`${this.baseUrl}/ride-request/${requestId}`, { status: 'REJECTED' });
   }
+
+  deleteRide(rideId: number): Observable<any> {
+    console.log(`Deleting ride with ID: ${rideId}`);
+    return this.http.delete(`${this.baseUrl}/ride/${rideId}`);
+  }
 }
 

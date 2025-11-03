@@ -16,6 +16,9 @@ export class RideDetailComponent implements OnInit {
   public isRequesting = false;
   public requestSuccess = false;
   public requestError: string | null = null;
+  public isDeleting = false;
+  public deleteSuccess = false;
+  public deleteError: string | null = null;
   private rideId!: number;
 
   constructor(
@@ -58,6 +61,33 @@ export class RideDetailComponent implements OnInit {
       error: (error) => {
         this.requestError = error.message || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
         this.isRequesting = false;
+      }
+    });
+  }
+
+  deleteRide(): void {
+    if (this.isDeleting) return;
+    
+    if (!confirm('Möchtest du diese Fahrt wirklich löschen? Dies kann nicht rückgängig gemacht werden.')) {
+      return;
+    }
+    
+    this.isDeleting = true;
+    this.deleteSuccess = false;
+    this.deleteError = null;
+
+    this.rideService.deleteRide(this.rideId).subscribe({
+      next: () => {
+        this.deleteSuccess = true;
+        this.isDeleting = false;
+        // Nach 1.5 Sekunden zurück zur Übersicht
+        setTimeout(() => {
+          window.location.href = '/rides';
+        }, 1500);
+      },
+      error: (error) => {
+        this.deleteError = error.message || 'Die Fahrt konnte nicht gelöscht werden. Bitte versuche es später erneut.';
+        this.isDeleting = false;
       }
     });
   }
