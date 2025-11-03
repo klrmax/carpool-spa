@@ -18,7 +18,7 @@ export const GET_ALL_RIDES = gql`
 
 
 export const SEARCH_RIDES = gql`
-  query SearchRides($start: String, $destination: String, $date: String, $time: String, $seats: Int) {
+  query SearchRides($start: String, $destination: String, $date: String, $time: String) {
     searchRides(
       start: $start
       destination: $destination
