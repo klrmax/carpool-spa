@@ -55,4 +55,10 @@ export class AuthService {
       window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/Login.html';
     }
   }
+  
+  redirectToHome(): void {
+    if (typeof window !== 'undefined') {
+      window.location.href = 'https://carpool-mpa-b2ab41ee1e9d.herokuapp.com/';
+    }
+  }
 }

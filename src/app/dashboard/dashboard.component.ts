@@ -50,13 +50,19 @@ export class DashboardComponent implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         this.authService.clearLocalStorage();
-        this.authService.redirectToLogin();
+        this.notificationService.showSuccess('Du wurdest erfolgreich ausgeloggt!');
+        setTimeout(() => {
+          this.authService.redirectToHome();
+        }, 500);
       },
       error: (error) => {
         console.error('Logout error:', error);
         // Auch wenn der Logout-Request fehlschlägt, clearen wir den lokalen Storage und redirecten
         this.authService.clearLocalStorage();
-        this.authService.redirectToLogin();
+        this.notificationService.showSuccess('Du wurdest erfolgreich ausgeloggt!');
+        setTimeout(() => {
+          this.authService.redirectToHome();
+        }, 500);
       }
     });
   }
