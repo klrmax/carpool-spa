@@ -85,7 +85,12 @@ export class DashboardComponent implements OnInit {
         next: (newRide: any) => {
           this.notificationService.showSuccess('Fahrt wurde erfolgreich erstellt!');
           this.createRideForm.reset();
-          this.setActiveTab('myRides');
+          
+          // Neu laden: Alle Rides refreshen
+          setTimeout(() => {
+            this.rideService.loadAllRides();
+            this.setActiveTab('myRides');
+          }, 500);
         },
         error: (error: any) => {
           // Die 401-Fehlerbehandlung wird global vom AuthInterceptor übernommen.
