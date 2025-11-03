@@ -31,7 +31,7 @@ export class TrainService {
         start: start,
         destination: destination,
         date: date,
-        hour: hour + '00'
+        hour: hour
       }
         }).pipe(
         catchError(error => {
