@@ -32,17 +32,17 @@ export class RideGraphqlService {
     time?: string
     ): Observable<Ride[]> {
   
- 
+    // Nur nicht-leere Parameter verwenden
+    const variables: any = {};
+    if (start) variables.start = start;
+    if (destination) variables.destination = destination;
+    if (date) variables.date = date;
+    if (time) variables.time = time;
+
     return this.apollo
       .watchQuery<{ searchRides: Ride[] }>({
         query: SEARCH_RIDES,
-        variables: { 
-          start, 
-          destination, 
-          date,  
-          time
-          }
-        
+        variables
       })
       .valueChanges.pipe(
         map((result) => result.data.searchRides)

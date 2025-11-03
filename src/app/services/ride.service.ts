@@ -119,7 +119,11 @@ export class RideService {
       error: (error) => {
         console.error('Error searching rides:', error);
         this.ridesSubject.next([]);
-        this.errorSubject.next('Fehler bei der Suche. Bitte versuchen Sie es später erneut.');
+        // Benutzerfreundliche Fehlermeldung basierend auf dem Fehlertyp
+        const errorMessage = error?.message?.toLowerCase().includes('validation') 
+          ? 'Ungültige Suchkriterien. Bitte überprüfen Sie Ihre Eingabe.'
+          : 'Fehler bei der Suche. Bitte versuchen Sie es später erneut.';
+        this.errorSubject.next(errorMessage);
         this.loadingSubject.next(false);
       }
     });
