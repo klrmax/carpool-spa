@@ -10,8 +10,7 @@ import { Observable } from 'rxjs';
   selector: 'app-ride-list',
   standalone: true,
   imports: [CommonModule, RouterLink], // CommonModule für *ngFor, RouterLink für die Links
-  templateUrl: './ride-list.component.html',
-  styleUrl: './ride-list.component.scss'
+  templateUrl: './ride-list.component.html'
 })
 
 export class RideListComponent implements OnInit {

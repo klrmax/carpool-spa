@@ -8,37 +8,31 @@
 
   <div class="content-area">
     <div class="train-connections" *ngIf="trainConnectionResponse">
-      <h3>Alternative Train Connections</h3>
-      <div class="train-info">
-        <p><strong>From:</strong> {{ trainConnectionResponse.from }} → <strong>To:</strong> {{ trainConnectionResponse.to }}</p>
-        <p><strong>Total Connections:</strong> {{ trainConnectionResponse.totalConnections }}</p>
-      </div>
-      <div class="train-list">
-        <div *ngFor="let connection of trainConnectionResponse.connections" class="train-card">
-          <div class="train-header">
-            <div class="train-category">
-              <strong>{{ connection.trainCategory }} {{ connection.trainNumber }}</strong>
-            </div>
-            <div class="train-platform">
-              Platform: {{ connection.platform }}
-            </div>
+      <h3>Alternative Train Connections ({{ trainConnectionResponse.connections.length }})</h3>
+        <div *ngFor="let connection of trainConnectionResponse.connections" class="ride-card">
+          <div class="ride-header">
+            <h3>{{ trainConnectionResponse.from }} → {{ trainConnectionResponse.to }}</h3>
           </div>
-          <div class="train-time">
-            <div class="departure-info">
+          <div class="ride-details">
+            <div class="detail-item">
               <span class="label">Departure:</span>
-              <span class="time">{{ formatDepartureTime(connection.departureTime) }}</span>
+              <span class="value">{{ formatDepartureTime(connection.departureTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Train:</span>
+              <span class="value">{{ connection.trainCategory }} {{ connection.trainNumber }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Platform:</span>
+              <span class="value">{{ connection.platform }}</span>
             </div>
           </div>
-          <div class="train-route">
-            <strong>Route:</strong>
-            <div class="stations">
-              <span *ngFor="let station of connection.path.split('|'); let last = last">
-                {{ station }}<span *ngIf="!last"> → </span>
-              </span>
-            </div>
+          <div class="ride-actions">
+            <a href="#" class="select-button">
+              View Details →
+            </a>
           </div>
         </div>
-      </div>
     </div>
 
     <app-ride-list></app-ride-list>
