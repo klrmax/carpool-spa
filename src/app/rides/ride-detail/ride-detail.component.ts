@@ -31,8 +31,8 @@ export class RideDetailComponent implements OnInit {
   ) {
     // Hole die aktuelle User-ID aus localStorage
     if (typeof window !== 'undefined' && localStorage) {
-      this.currentUserId = localStorage.getItem('userid');
-      console.log('🔍 Constructor: Retrieved userid from localStorage:', this.currentUserId);
+      this.currentUserId = localStorage.getItem('userId');
+      console.log('🔍 Constructor: Retrieved userId from localStorage:', this.currentUserId);
     }
   }
 
