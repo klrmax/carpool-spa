@@ -65,14 +65,17 @@ export class RideService {
 
   loadAllRides(): void {
     this.loadingSubject.next(true);
-  this.rideGraphqlService.getAllRides().subscribe({
-  next: (rides) => {
-    console.log('Loaded rides:', rides);
-    this.ridesSubject.next(rides);
-    this.loadingSubject.next(false);
-  },
+    this.errorSubject.next(null); // Fehler clearen
+    this.rideGraphqlService.getAllRides().subscribe({
+      next: (rides) => {
+        console.log('Loaded rides:', rides);
+        this.ridesSubject.next(rides);
+        this.loadingSubject.next(false);
+      },
       error: (error) => {
         console.error('Error loading rides:', error);
+        this.ridesSubject.next([]);
+        this.errorSubject.next('Fehler beim Laden der Fahrten. Bitte versuchen Sie es später erneut.');
         this.loadingSubject.next(false);
       }
     });
