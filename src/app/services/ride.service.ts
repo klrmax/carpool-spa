@@ -117,21 +117,63 @@ export class RideService {
         this.loadingSubject.next(false);
       },
       error: (error) => {
-        console.error('Error searching rides:', error);
-        this.ridesSubject.next([]);
-        // Benutzerfreundliche Fehlermeldung basierend auf dem Fehlertyp
-        let errorMessage = 'Fehler bei der Suche. Bitte versuchen Sie es später erneut.';
-        
-        if (error?.message?.toLowerCase().includes('validation')) {
-          errorMessage = 'Ungültige Suchkriterien. Bitte überprüfen Sie Ihre Eingabe.';
-        } else if (error?.message?.toLowerCase().includes('keine passenden') || 
-                   error?.message?.toLowerCase().includes('keine freien')) {
-          errorMessage = 'Keine Fahrten mit freien Plätzen gefunden. Versuchen Sie andere Kriterien.';
-        }
-        
-        this.errorSubject.next(errorMessage);
-        this.loadingSubject.next(false);
+        console.error('Error searching rides, falling back to getAllRides:', error);
+        // Fallback: Alle Fahrten laden und client-seitig filtern
+        this.rideGraphqlService.getAllRides().subscribe({
+          next: (allRides) => {
+            const filteredRides = this.filterRides(allRides, terms);
+            if (filteredRides && filteredRides.length > 0) {
+              this.ridesSubject.next(filteredRides);
+              this.errorSubject.next(null);
+            } else {
+              this.ridesSubject.next([]);
+              this.errorSubject.next('Keine Fahrten gefunden. Bitte versuchen Sie andere Suchkriterien.');
+            }
+            this.loadingSubject.next(false);
+          },
+          error: (fallbackError) => {
+            console.error('Error in fallback getAllRides:', fallbackError);
+            this.ridesSubject.next([]);
+            let errorMessage = 'Fehler bei der Suche. Bitte versuchen Sie es später erneut.';
+            
+            if (fallbackError?.message?.toLowerCase().includes('validation')) {
+              errorMessage = 'Ungültige Suchkriterien. Bitte überprüfen Sie Ihre Eingabe.';
+            }
+            
+            this.errorSubject.next(errorMessage);
+            this.loadingSubject.next(false);
+          }
+        });
       }
+    });
+  }
+
+  private filterRides(rides: Ride[], terms: SearchTerms): Ride[] {
+    return rides.filter(ride => {
+      // Prüfe Startort
+      if (terms.from && !ride.startLocation.toLowerCase().includes(terms.from.toLowerCase())) {
+        return false;
+      }
+      
+      // Prüfe Zielort
+      if (terms.to && !ride.destination.toLowerCase().includes(terms.to.toLowerCase())) {
+        return false;
+      }
+      
+      // Prüfe Verfügbare Plätze (mindestens 1)
+      if (ride.availableSeats < 1) {
+        return false;
+      }
+      
+      // Prüfe Datum falls vorhanden
+      if (terms.date && ride.departureTime) {
+        const rideDate = new Date(ride.departureTime).toISOString().split('T')[0];
+        if (rideDate !== terms.date) {
+          return false;
+        }
+      }
+      
+      return true;
     });
   }
 
