@@ -30,7 +30,7 @@ export class TrainService {
       params: {
         start: start,
         destination: destination,
-        date: '20' + date,
+        date: date,
         hour: hour
       }
         }).pipe(
