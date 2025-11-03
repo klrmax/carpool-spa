@@ -32,7 +32,7 @@
         <div *ngFor="let ride of joinedRides" class="ride-card">
           <h3>{{ ride.departure_location }} → {{ ride.destination_location }}</h3>
           <p>Date: {{ ride.departure_time | date:'dd.MM.yyyy HH:mm' }} Uhr</p>
-          <p>Driver: {{ ride.driver?.name }}</p>
+          <p>Driver: {{ getDriverLabel(ride) }}</p>
           <button [routerLink]="['/rides', ride.id]">Details</button>
         </div>
       </div>

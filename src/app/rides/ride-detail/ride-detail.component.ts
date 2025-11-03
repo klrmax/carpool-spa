@@ -50,21 +50,21 @@ export class RideDetailComponent implements OnInit {
       
       // Überprüfe, ob es meine Fahrt ist
       if (ride && ride.driver && this.currentUserId) {
-        // REST API gibt entweder driver.id oder driver.userid zurück
-        const driverId = (ride.driver.id || ride.driver.userid)?.toString();
-        console.log('Driver ID from ride:', driverId);
+        // Backend stellt die Fahrer-ID als `userid` bereit; falls ausnahmsweise `id` vorhanden ist, fallback darauf
+        const driverId = ((ride.driver as any).userid || (ride.driver as any).id)?.toString();
+        console.log('Driver userid from ride (preferred):', (ride.driver as any).userid);
+        console.log('Driver id from ride (fallback):', (ride.driver as any).id);
+        console.log('Driver ID used for comparison:', driverId);
         console.log('Current User ID:', this.currentUserId);
-        console.log('Vergleich: driverId === currentUserId?', driverId === this.currentUserId);
-        
         this.isOwnRide = driverId === this.currentUserId;
         console.log('✅ Is Own Ride:', this.isOwnRide);
       } else {
         console.warn('⚠️ Missing ride, driver, or currentUserId:', { 
-          ride: !!ride, 
-          driver: !!ride?.driver, 
+          hasRide: !!ride, 
+          hasDriver: !!ride?.driver, 
           currentUserId: this.currentUserId,
-          driverId: ride?.driver?.id,
-          driverUserId: (ride?.driver as any)?.userid
+          driverUserid: (ride?.driver as any)?.userid,
+          driverId: (ride?.driver as any)?.id
         });
       }
     },

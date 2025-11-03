@@ -31,4 +31,11 @@ export class RideListComponent implements OnInit {
   trackByRideId(index: number, ride: Ride): number {
     return ride.id;
   }
+
+  // Helper to safely read driver name (avoids strict template type-check issues)
+  getDriverName(ride: any): string {
+    if (!ride) return 'N/A';
+    const drv = ride.driver as any;
+    return (drv && (drv.name || drv.username || drv.userName)) || 'N/A';
+  }
 }

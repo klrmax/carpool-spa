@@ -49,4 +49,13 @@ export class MyRidesComponent implements OnInit {
       }
     });
   }
+
+  // Helper: returns a readable driver label regardless of shape (string or object)
+  getDriverLabel(ride: any): string {
+    if (!ride) return 'N/A';
+    const d: any = ride.driver;
+    if (!d) return 'N/A';
+    if (typeof d === 'string') return d;
+    return d.name || d.username || d.userName || 'N/A';
+  }
 }
