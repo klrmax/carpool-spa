@@ -16,6 +16,9 @@
       (click)="setActiveTab('requests')">
       Requests
     </button>
+    <button class="logout-btn" (click)="logout()">
+      Logout
+    </button>
   </nav>
 
   <div class="dashboard-content" [ngSwitch]="activeTab">

@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { MyRidesComponent } from '../my-rides/my-rides.component';
 import { RideRequestsComponent } from '../ride-requests/ride-requests.component';
 import { RideService } from '../services/ride.service';
+import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -27,6 +28,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private rideService: RideService, 
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
     private notificationService: NotificationService
@@ -43,9 +45,26 @@ export class DashboardComponent implements OnInit {
       this.router.navigate([], { queryParams: {}, replaceUrl: true });
     }
   }
+
+  logout(): void {
+    this.authService.logout().subscribe({
+      next: () => {
+        this.authService.clearLocalStorage();
+        this.authService.redirectToLogin();
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Auch wenn der Logout-Request fehlschlägt, clearen wir den lokalen Storage und redirecten
+        this.authService.clearLocalStorage();
+        this.authService.redirectToLogin();
+      }
+    });
+  }
+
   goToOtherPage() {
     this.router.navigate(['/rides']);
   }
+
   onSubmit(): void {
     if (this.createRideForm.valid) {
       const formValue = this.createRideForm.value;
