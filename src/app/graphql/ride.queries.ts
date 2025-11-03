@@ -10,6 +10,8 @@ export const GET_ALL_RIDES = gql`
       departureTime
       availableSeats
       driver {
+        id
+        userid
         name
       }
     }
@@ -31,6 +33,8 @@ export const SEARCH_RIDES = gql`
       departureTime
       availableSeats
       driver {
+        id
+        userid
         name
       }
     }
@@ -46,6 +50,7 @@ export const GET_RIDE_BY_ID = gql`
       availableSeats
       driver {
         id
+        userid
         name
         email
       }
