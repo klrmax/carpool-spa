@@ -87,6 +87,21 @@
     text-decoration: none;
 }
 
+/* Error message styling */
+.error-message {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.error-message p {
+    color: #856404;
+    margin: 0;
+    font-weight: 500;
+}
+
 /* Debug output styling */
 pre {
     background: #f5f5f5;

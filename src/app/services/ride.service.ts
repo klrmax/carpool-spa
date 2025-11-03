@@ -54,6 +54,9 @@ export class RideService {
   private loadingSubject = new BehaviorSubject<boolean>(true);
   public loading$ = this.loadingSubject.asObservable();
 
+  private errorSubject = new BehaviorSubject<string | null>(null);
+  public error$ = this.errorSubject.asObservable();
+
   public searchTermsSubject = new BehaviorSubject<SearchTerms>({});
   public searchTerms$ = this.searchTermsSubject.asObservable();
 
@@ -87,6 +90,7 @@ export class RideService {
 }
   private searchRides(terms: SearchTerms): void {
     this.loadingSubject.next(true);
+    this.errorSubject.next(null); // Fehler clearen
     const searchParams: any = {};
     if (terms.from) searchParams.start = terms.from;
     if (terms.to) searchParams.destination = terms.to;
@@ -100,11 +104,19 @@ export class RideService {
       searchParams.time
     ).subscribe({
       next: (rides) => {
-        this.ridesSubject.next(rides);
+        if (rides && rides.length > 0) {
+          this.ridesSubject.next(rides);
+          this.errorSubject.next(null);
+        } else {
+          this.ridesSubject.next([]);
+          this.errorSubject.next('Keine Fahrten gefunden. Bitte versuchen Sie andere Suchkriterien.');
+        }
         this.loadingSubject.next(false);
       },
       error: (error) => {
         console.error('Error searching rides:', error);
+        this.ridesSubject.next([]);
+        this.errorSubject.next('Fehler bei der Suche. Bitte versuchen Sie es später erneut.');
         this.loadingSubject.next(false);
       }
     });

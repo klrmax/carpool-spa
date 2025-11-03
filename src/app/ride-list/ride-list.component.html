@@ -6,6 +6,10 @@
   </div>
 
   <div *ngIf="!(loading$ | async)" class="rides-content">
+    <div *ngIf="error$ | async as error" class="error-message">
+      <p>{{ error }}</p>
+    </div>
+    
     <div *ngIf="rides$ | async as rides">
       <div *ngIf="rides.length === 0" class="no-rides">
         <p>No rides available at the moment.</p>

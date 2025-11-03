@@ -16,16 +16,19 @@ import { Observable } from 'rxjs';
 export class RideListComponent implements OnInit {
   rides$: Observable<Ride[]>;
   loading$: Observable<boolean>;
+  error$: Observable<string | null>;
 
   constructor(private rideService: RideService) {
     this.rides$ = this.rideService.rides$;
     this.loading$ = this.rideService.loading$;
+    this.error$ = this.rideService.error$;
   }
 
   ngOnInit(): void {
     this.rideService.loadAllRides();
   }
+  
   trackByRideId(index: number, ride: Ride): number {
-  return ride.id;
-}
+    return ride.id;
+  }
 }
