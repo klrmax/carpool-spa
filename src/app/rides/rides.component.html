@@ -1,40 +1,29 @@
 <div class="rides-container">
   <div class="rides-header">
-    <h2>Find your next ride</h2>
-  <button (click)="goToOtherPage()">My Dashboard</button>
+    <h1>🚙 Find Your Next Ride</h1>
   </div>
 
   <app-searchbar></app-searchbar>
 
   <div class="content-area">
+    <!-- Train Connections Section -->
     <div class="train-connections" *ngIf="trainConnectionResponse">
-      <h3>Alternative Train Connections ({{ trainConnectionResponse.connections.length }})</h3>
+      <h3>🚂 Train Alternatives ({{ trainConnectionResponse.connections.length }})</h3>
+      <div class="rides-grid">
         <div *ngFor="let connection of trainConnectionResponse.connections" class="ride-card">
           <div class="ride-header">
-            <h3>{{ trainConnectionResponse.from }} → {{ trainConnectionResponse.to }}</h3>
+            <h4>{{ trainConnectionResponse.from }} → {{ trainConnectionResponse.to }}</h4>
           </div>
           <div class="ride-details">
-            <div class="detail-item">
-              <span class="label">Departure:</span>
-              <span class="value">{{ formatDepartureTime(connection.departureTime) }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">Train:</span>
-              <span class="value">{{ connection.trainCategory }} {{ connection.trainNumber }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">Platform:</span>
-              <span class="value">{{ connection.platform }}</span>
-            </div>
-          </div>
-          <div class="ride-actions">
-            <a href="#" class="select-button">
-              View Details →
-            </a>
+            <p><strong>🕐</strong> {{ formatDepartureTime(connection.departureTime) }}</p>
+            <p><strong>🚆</strong> {{ connection.trainCategory }} {{ connection.trainNumber }}</p>
+            <p><strong>🎫</strong> Platform {{ connection.platform }}</p>
           </div>
         </div>
+      </div>
     </div>
 
+    <!-- Carpool Rides Section -->
     <app-ride-list></app-ride-list>
   </div>
 </div>
