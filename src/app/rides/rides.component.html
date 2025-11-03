@@ -7,22 +7,35 @@
   <app-searchbar></app-searchbar>
 
   <div class="content-area">
-    <div class="train-connections">
+    <div class="train-connections" *ngIf="trainConnectionResponse">
       <h3>Alternative Train Connections</h3>
+      <div class="train-info">
+        <p><strong>From:</strong> {{ trainConnectionResponse.from }} → <strong>To:</strong> {{ trainConnectionResponse.to }}</p>
+        <p><strong>Total Connections:</strong> {{ trainConnectionResponse.totalConnections }}</p>
+      </div>
       <div class="train-list">
-        <div *ngFor="let connection of trainConnections" class="train-card">
+        <div *ngFor="let connection of trainConnectionResponse.connections" class="train-card">
+          <div class="train-header">
+            <div class="train-category">
+              <strong>{{ connection.trainCategory }} {{ connection.trainNumber }}</strong>
+            </div>
+            <div class="train-platform">
+              Platform: {{ connection.platform }}
+            </div>
+          </div>
           <div class="train-time">
-            <div>{{ connection.departure_time }}</div>
-            <div class="duration">{{ connection.duration }}</div>
-            <div>{{ connection.arrival_time }}</div>
+            <div class="departure-info">
+              <span class="label">Departure:</span>
+              <span class="time">{{ formatDepartureTime(connection.departureTime) }}</span>
+            </div>
           </div>
-          <div class="train-stations">
-            <div>{{ connection.departure_station }}</div>
-            <div class="transfers">{{ connection.transfers }} Transfers</div>
-            <div>{{ connection.arrival_station }}</div>
-          </div>
-          <div class="train-price">
-            <strong>{{ connection.price | currency:'EUR' }}</strong>
+          <div class="train-route">
+            <strong>Route:</strong>
+            <div class="stations">
+              <span *ngFor="let station of connection.path.split('|'); let last = last">
+                {{ station }}<span *ngIf="!last"> → </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>

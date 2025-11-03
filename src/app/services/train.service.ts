@@ -5,14 +5,24 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 export interface TrainConnection {
+  trainCategory: string;
+  departureTime: string;
+  path: string;
+  trainType: string;
+  trainNumber: string;
   id: string;
-  departure_time: string;
-  arrival_time: string;
-  departure_station: string;
-  arrival_station: string;
-  duration: string;
-  price: number;
-  transfers: number;
+  platform: string;
+}
+
+export interface TrainConnectionResponse {
+  date: string;
+  toEva: string;
+  fromEva: string;
+  hour: string;
+  totalConnections: number;
+  from: string;
+  to: string;
+  connections: TrainConnection[];
 }
 
 @Injectable({
@@ -23,20 +33,18 @@ export class TrainService {
 
   constructor(private http: HttpClient) { }
 
-  getTrainConnections(start: string, destination: string, date: string, hour: string): Observable<TrainConnection[]> {
-
-
-      return this.http.get<TrainConnection[]>(`${this.baseUrl}/trains`, {
+  getTrainConnections(start: string, destination: string, date: string, hour: string): Observable<TrainConnectionResponse | null> {
+    return this.http.get<TrainConnectionResponse>(`${this.baseUrl}/trains`, {
       params: {
         start: start,
         destination: destination,
         date: date,
         hour: hour
       }
-        }).pipe(
-        catchError(error => {
+    }).pipe(
+      catchError(error => {
         console.error('Error fetching train connections:', error);
-        return of([]);
+        return of(null);
       })
     );
   }
