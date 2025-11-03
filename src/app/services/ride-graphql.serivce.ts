@@ -32,12 +32,14 @@ export class RideGraphqlService {
     time?: string
     ): Observable<Ride[]> {
   
-    // Nur nicht-leere Parameter verwenden
-    const variables: any = {};
-    if (start) variables.start = start;
-    if (destination) variables.destination = destination;
-    if (date) variables.date = date;
-    if (time) variables.time = time;
+    // Alle Parameter übergeben, auch wenn sie undefined sind
+    // Das Backend kann dann damit umgehen
+    const variables: any = {
+      start: start || null,
+      destination: destination || null,
+      date: date || null,
+      time: time || null
+    };
 
     return this.apollo
       .watchQuery<{ searchRides: Ride[] }>({
