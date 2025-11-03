@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Ride, RideId, RideService } from '../../services/ride.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-ride-detail',
@@ -19,12 +20,20 @@ export class RideDetailComponent implements OnInit {
   public isDeleting = false;
   public deleteSuccess = false;
   public deleteError: string | null = null;
+  public isOwnRide = false; // Ist das meine eigene Fahrt?
   private rideId!: number;
+  private currentUserId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private rideService: RideService
-  ) {}
+    private rideService: RideService,
+    private authService: AuthService
+  ) {
+    // Hole die aktuelle User-ID
+    if (typeof window !== 'undefined') {
+      this.currentUserId = localStorage.getItem('userid');
+    }
+  }
 
   ngOnInit(): void {
   this.rideId = +this.route.snapshot.paramMap.get('id')!;
@@ -36,6 +45,14 @@ export class RideDetailComponent implements OnInit {
     next: (ride) => {
       console.log('Received ride data:', ride);
       console.log('Driver:', ride?.driver);
+      
+      // Überprüfe, ob es meine Fahrt ist
+      if (ride && ride.driver && this.currentUserId) {
+        this.isOwnRide = ride.driver.id?.toString() === this.currentUserId;
+        console.log('Current User ID:', this.currentUserId);
+        console.log('Driver ID:', ride.driver.id);
+        console.log('Is Own Ride:', this.isOwnRide);
+      }
     },
     error: (error) => {
       console.error('❌ Error loading ride:', error);

@@ -44,18 +44,24 @@
   </div>
   
   <div class="actions">
+    <!-- Request Button: Nur für fremde Fahrten -->
     <button 
+      *ngIf="!isOwnRide"
       class="request-button" 
       (click)="sendRequest()"
       [disabled]="isRequesting">
       {{ isRequesting ? 'Sending request...' : 'Request Ride' }}
     </button>
+    
+    <!-- Delete Button: Nur für meine Fahrten -->
     <button 
+      *ngIf="isOwnRide"
       class="delete-button" 
       (click)="deleteRide()"
       [disabled]="isDeleting">
       {{ isDeleting ? 'Deleting...' : 'Delete Ride' }}
     </button>
+    
     <a routerLink="/rides" class="back-link">← Back to Overview</a>
   </div>
   
