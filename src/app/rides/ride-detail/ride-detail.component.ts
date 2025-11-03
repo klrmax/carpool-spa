@@ -38,20 +38,27 @@ export class RideDetailComponent implements OnInit {
   ngOnInit(): void {
   this.rideId = +this.route.snapshot.paramMap.get('id')!;
   console.log('Loading ride with ID:', this.rideId);
+  console.log('Current User ID from localStorage:', this.currentUserId);
   
   this.ride$ = this.rideService.getRideById(this.rideId);
   
   this.ride$.subscribe({
     next: (ride) => {
       console.log('Received ride data:', ride);
-      console.log('Driver:', ride?.driver);
+      console.log('Driver object:', ride?.driver);
       
       // Überprüfe, ob es meine Fahrt ist
       if (ride && ride.driver && this.currentUserId) {
-        this.isOwnRide = ride.driver.id?.toString() === this.currentUserId;
+        // REST API gibt driver.id zurück
+        const driverId = ride.driver.id?.toString();
+        console.log('Driver ID from ride:', driverId);
         console.log('Current User ID:', this.currentUserId);
-        console.log('Driver ID:', ride.driver.id);
-        console.log('Is Own Ride:', this.isOwnRide);
+        console.log('Vergleich: driverId === currentUserId?', driverId === this.currentUserId);
+        
+        this.isOwnRide = driverId === this.currentUserId;
+        console.log('✅ Is Own Ride:', this.isOwnRide);
+      } else {
+        console.warn('⚠️ Missing ride, driver, or currentUserId:', { ride, driver: ride?.driver, currentUserId: this.currentUserId });
       }
     },
     error: (error) => {
