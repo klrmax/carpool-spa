@@ -15,20 +15,20 @@ export class RideGraphqlService {
 
   // Alle Fahrten beim Laden der Seite
   getAllRides(): Observable<any[]> {
-    console.log('🔍 GraphQL: Requesting getAllRides...');
+  console.log('GraphQL: Requesting getAllRides...');
     return this.apollo
       .watchQuery<{ getAllRides: Ride[] }>({
         query: GET_ALL_RIDES
       })
       .valueChanges.pipe(
         map((result) => {
-          console.log('📊 GraphQL getAllRides response:', result);
-          console.log('📊 Data:', result.data);
-          console.log('📊 getAllRides:', result.data.getAllRides);
+          console.log('GraphQL getAllRides response:', result);
+          console.log('Data:', result.data);
+          console.log('getAllRides:', result.data.getAllRides);
           return result.data.getAllRides || [];
         }),
         catchError((error) => {
-          console.error('❌ GraphQL getAllRides error:', error);
+          console.error('GraphQL getAllRides error:', error);
           console.error('   Error message:', error.message);
           console.error('   GraphQL errors:', error.graphQLErrors);
           console.error('   Network error:', error.networkError);
@@ -54,7 +54,7 @@ export class RideGraphqlService {
       time: time || null
     };
 
-    console.log('🔍 GraphQL: Requesting searchRides with variables:', variables);
+  console.log('GraphQL: Requesting searchRides with variables:', variables);
     return this.apollo
       .watchQuery<{ searchRides: Ride[] }>({
         query: SEARCH_RIDES,
@@ -62,18 +62,18 @@ export class RideGraphqlService {
       })
       .valueChanges.pipe(
         map((result) => {
-          console.log('📊 GraphQL searchRides response:', result.data.searchRides);
+          console.log('GraphQL searchRides response:', result.data.searchRides);
           return result.data.searchRides || [];
         }),
         catchError((error: any) => {
-          console.error('❌ GraphQL searchRides error:', error);
+          console.error('GraphQL searchRides error:', error);
           return of([]);
         })
       );
   }
 
   getRideById(id: number): Observable<Ride | undefined> {
-    console.log('🔍 GraphQL: Requesting getRideById with id:', id);
+  console.log('GraphQL: Requesting getRideById with id:', id);
     return this.apollo
       .watchQuery<{ getRideById: Ride }>({
         query: GET_RIDE_BY_ID,
@@ -81,11 +81,11 @@ export class RideGraphqlService {
       })
       .valueChanges.pipe(
         map((result) => {
-          console.log('📊 GraphQL getRideById response:', result.data.getRideById);
+          console.log('GraphQL getRideById response:', result.data.getRideById);
           return result.data.getRideById;
         }),
         catchError((error: any) => {
-          console.error('❌ GraphQL getRideById error:', error);
+          console.error('GraphQL getRideById error:', error);
           return of(undefined);
         })
       );

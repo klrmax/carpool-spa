@@ -31,8 +31,8 @@ export class RideDetailComponent implements OnInit {
   ) {
     // Hole die aktuelle User-ID aus localStorage
     if (typeof window !== 'undefined' && localStorage) {
-      this.currentUserId = localStorage.getItem('userId');
-      console.log('🔍 Constructor: Retrieved userId from localStorage:', this.currentUserId);
+  this.currentUserId = localStorage.getItem('userId');
+  console.log('Constructor: Retrieved userId from localStorage:', this.currentUserId);
     }
   }
 
@@ -57,9 +57,9 @@ export class RideDetailComponent implements OnInit {
         console.log('Driver ID used for comparison:', driverId);
         console.log('Current User ID:', this.currentUserId);
         this.isOwnRide = driverId === this.currentUserId;
-        console.log('✅ Is Own Ride:', this.isOwnRide);
+        console.log('Is Own Ride:', this.isOwnRide);
       } else {
-        console.warn('⚠️ Missing ride, driver, or currentUserId:', { 
+        console.warn('Missing ride, driver, or currentUserId:', { 
           hasRide: !!ride, 
           hasDriver: !!ride?.driver, 
           currentUserId: this.currentUserId,
@@ -69,7 +69,7 @@ export class RideDetailComponent implements OnInit {
       }
     },
     error: (error) => {
-      console.error('❌ Error loading ride:', error);
+      console.error('Error loading ride:', error);
       console.error('Error status:', error.status);
       console.error('Error message:', error.message);
     }
@@ -122,4 +122,22 @@ export class RideDetailComponent implements OnInit {
       }
     });
   }
+
+    // Helpers to safely render driver fields regardless of backend shape
+    getDriverName(ride: any): string {
+      const d = ride?.driver as any;
+      if (!d) return 'N/A';
+      if (typeof d === 'string') return d;
+      return d.name || d.username || d.userName || 'N/A';
+    }
+
+    getDriverMobile(ride: any): string | null {
+      const d = ride?.driver as any;
+      return d?.mobileNumber || null;
+    }
+
+    getDriverEmail(ride: any): string | null {
+      const d = ride?.driver as any;
+      return d?.email || null;
+    }
 }

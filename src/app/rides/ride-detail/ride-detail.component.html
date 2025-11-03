@@ -26,14 +26,17 @@
     </div>
     
     <div class="driver-info">
-  <h3>Driver Information</h3>
-  <p>
-    <strong>Name:</strong> {{ ride.driver || 'N/A' }}
-  </p>
-  <p *ngIf="ride.driver?.email">
-    <strong>Mobile:</strong> {{ ride.driver || 'N/A' }}
-  </p>
-</div>
+      <h3>Driver Information</h3>
+      <p>
+        <strong>Name:</strong> {{ getDriverName(ride) }}
+      </p>
+      <p *ngIf="getDriverMobile(ride)">
+        <strong>Mobile:</strong> {{ getDriverMobile(ride) }}
+      </p>
+      <p *ngIf="getDriverEmail(ride)">
+        <strong>Email:</strong> {{ getDriverEmail(ride) }}
+      </p>
+    </div>
     
     <div class="seats-info">
       <h3>Availability</h3>
