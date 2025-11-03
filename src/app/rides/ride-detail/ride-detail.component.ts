@@ -29,9 +29,10 @@ export class RideDetailComponent implements OnInit {
     private rideService: RideService,
     private authService: AuthService
   ) {
-    // Hole die aktuelle User-ID
-    if (typeof window !== 'undefined') {
+    // Hole die aktuelle User-ID aus localStorage
+    if (typeof window !== 'undefined' && localStorage) {
       this.currentUserId = localStorage.getItem('userid');
+      console.log('🔍 Constructor: Retrieved userid from localStorage:', this.currentUserId);
     }
   }
 
@@ -43,14 +44,14 @@ export class RideDetailComponent implements OnInit {
   this.ride$ = this.rideService.getRideById(this.rideId);
   
   this.ride$.subscribe({
-    next: (ride) => {
+    next: (ride: any) => {
       console.log('Received ride data:', ride);
       console.log('Driver object:', ride?.driver);
       
       // Überprüfe, ob es meine Fahrt ist
       if (ride && ride.driver && this.currentUserId) {
-        // REST API gibt driver.id zurück
-        const driverId = ride.driver.id?.toString();
+        // REST API gibt entweder driver.id oder driver.userid zurück
+        const driverId = (ride.driver.id || ride.driver.userid)?.toString();
         console.log('Driver ID from ride:', driverId);
         console.log('Current User ID:', this.currentUserId);
         console.log('Vergleich: driverId === currentUserId?', driverId === this.currentUserId);
@@ -58,7 +59,13 @@ export class RideDetailComponent implements OnInit {
         this.isOwnRide = driverId === this.currentUserId;
         console.log('✅ Is Own Ride:', this.isOwnRide);
       } else {
-        console.warn('⚠️ Missing ride, driver, or currentUserId:', { ride, driver: ride?.driver, currentUserId: this.currentUserId });
+        console.warn('⚠️ Missing ride, driver, or currentUserId:', { 
+          ride: !!ride, 
+          driver: !!ride?.driver, 
+          currentUserId: this.currentUserId,
+          driverId: ride?.driver?.id,
+          driverUserId: (ride?.driver as any)?.userid
+        });
       }
     },
     error: (error) => {
